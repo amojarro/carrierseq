@@ -11,7 +11,6 @@ Carrier/Pore-Maintainer Sequencing Analysis for Nanopore Sequencing
 3a. Save Dockerfile to your directory 
 4a. ```$ cd to/your/directory```
 5a. ```$ docker build -t <name-your-image> .```
-
 ### or
 
 3b. run ```$ docker pull mojarro/carrierseq:latest```
