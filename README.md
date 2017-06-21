@@ -6,15 +6,15 @@ Carrier/Pore-Maintainer Sequencing Analysis for Nanopore Sequencing
 
 ## Getting Started
 
+### Building Your Own Docker Image
+
 1. Download & install Docker - https://www.docker.com/
 2. Start Docker and increase the threads/memory setting to your preference. (The included script is set to 6 CPUs and 18 GB ram.)
+3. Save Dockerfile to your directory 
+4. ```$ cd to/your/directory```
+5. ```$ docker build -t <name-your-image> .```
 
-3a. Save Dockerfile to your directory 
+### Or Pull from Docker Hub
 
-4a. ```$ cd to/your/directory```
-
-5a. ```$ docker build -t <name-your-image> .```
-
-### or
-
-3b. run ```$ docker pull mojarro/carrierseq:latest```
+1. Start docker
+2. run ```$ docker pull mojarro/carrierseq:latest```
