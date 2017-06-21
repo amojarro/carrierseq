@@ -1,2 +1,7 @@
 # CarrierSeq
-Carrier-pore maintainer Sequencing Analysis
+Carrier/Pore-Maintainer Sequencing Analysis for Nanopore Sequencing
+
+## About
+...
+
+
