@@ -1,0 +1,1 @@
+fastq file containing all reads to be analyzed -> fastq/all_reads.fastq
