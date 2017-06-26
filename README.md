@@ -26,3 +26,8 @@ Alternatively, use Docker and the Docker scripts.
 
 1. Start docker
 2. run ```docker pull mojarro/carrierseq:latest```
+
+## Using CarrierSeq and CarrierSeqXL
+## Local Machine
+
+## Docker
