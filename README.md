@@ -1,6 +1,6 @@
 # CarrierSeq: 
 
-CarrierSeq and CarrierSeqXL are sequence analysis 
+CarrierSeq and CarrierSeqXL
 
 ## Requirements
 
