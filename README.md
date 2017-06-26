@@ -4,10 +4,10 @@ CarrierSeq and CarrierSeqXL are sequence analysis
 
 ## Requirements 
 
-bwa - https://github.com/lh3/bwa
-seqtk - https://github.com/lh3/seqtk
-samtools - https://github.com/samtools/samtools
-fqtrim - https://ccb.jhu.edu/software/fqtrim/
+>bwa - https://github.com/lh3/bwa
+>seqtk - https://github.com/lh3/seqtk
+>samtools - https://github.com/samtools/samtools
+>fqtrim - https://ccb.jhu.edu/software/fqtrim/
 
 ### Building Your Own Docker Image
 
