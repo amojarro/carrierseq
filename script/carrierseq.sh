@@ -5,7 +5,7 @@
 # angelmojarro.com
 
 # your data directory
-DataFolder="/Users/mojarro/Desktop/lowinput/carrierseqxl" # your data folder must contain a "fastq" and "reference" folder containing your *.fastq, *.fq file and *.fa, *.fasta reference genomes, respectively 
+DataFolder="path/to/your/data/folder" # your data folder must contain a "fastq", "python" "reference" folder containing your *.fastq, *.fq file and *.fa, *.fasta reference genomes, respectively 
 FastQ="$DataFolder/fastq" # fastq to be analyzed name "all_reads.fastq"
 Reference="$DataFolder/reference" # reference genome(s) - lambda & ecoli "lambda_ecoli.fa"
 PythonScript="$DataFolder/python" # fastq quality filter .py scripts by Michael Micorescu <Michael dot Micorescu at nanoporetech dot com> edited by Angel Mojarro for Docker compatibility
@@ -19,7 +19,9 @@ mkdir -p $DataFolder/03_01_low_quality_reads # low-quality reads
 mkdir -p $DataFolder/04_fqtrim_dusted # filter low complexity reads
 mkdir -p $DataFolder/04_01_low_complexity_reads # low-complexity reads
 mkdir -p $DataFolder/05_target_reads # final output if target is unknown
-mkdir -p $DataFolder/06_bwa_bsubtilis # map unknown reads to bsubtilis
+
+# CarrierSeqXL commands
+# mkdir -p $DataFolder/06_bwa_bsubtilis # map unknown reads to bsubtilis
 mkdir -p $DataFolder/07_samtools_bsubtilis # list mapped reads to bsubtilis
 mkdir -p $DataFolder/08_samtools_unknown_reads # list unmapped reads
 mkdir -p $DataFolder/09_seqtk_bsubtilis # extract bsubtilis reads
