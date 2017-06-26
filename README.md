@@ -1,10 +1,11 @@
-# CarrierSeq
-Carrier/Pore-Maintainer Sequencing Analysis for Nanopore Sequencing
+# CarrierSeq: 
 
-## About
-...
+CarrierSeq and CarrierSeqXL are sequence analysis 
 
-## Getting Started
+## Requirements 
+
+bwa - https://github.com/lh3/bwa
+seqtk - https://github.com/lh3/seqtk
 
 ### Building Your Own Docker Image
 
