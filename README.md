@@ -30,7 +30,7 @@ Alternatively, use Docker and the Docker scripts.
 ## Using CarrierSeq and CarrierSeqXL
 ### Local Machine
 
-Configure your working directory as such:
+Edit the appropriate *.sh file and configure your working directory as such:
 
 ```
 DataFolder="your/working/directory" 
@@ -39,6 +39,8 @@ $DataFolder/fastq # fastq reads file to be analyzed - "all_reads.fastq"
 $DataFolder/reference # reference genome(s). example - "lambda/lambda.fa"
 $DataFolder/python # fastq quality filter python script by Michael Micorescu <Michael dot Micorescu at nanoporetech dot com> and edited by Angel Mojarro
 ```
-Edit the 
+Find and replace <reference_1> and <reference_2> (if using CarrierSeqXL) with your reference genome(s)
+
+Then simply ```./*.sh``` depending on the which workflow you choose. ex. - ```./carrierseq.sh```
 
 ### Docker
