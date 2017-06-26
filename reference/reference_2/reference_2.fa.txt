@@ -1,0 +1,3 @@
+your target reference genome if available. ex. - bsubtilis.fa
+
+note: reference_2 only required for CarrierSeqXL script.
