@@ -48,5 +48,5 @@ Then ```./carrierseq.sh``` or ```./carrierseqxl.sh```
 
 Follow the same steps as above except edit ```CarrierSeq="mojarro/carrierseq:latest"``` if youd decide to build your own Docker Image.
 
-Then simply ```./carrierseq_docker.sh``` or ```./carrierseqxl_docker.sh```
+Make sure Docker is running then simply ```./carrierseq_docker.sh``` or ```./carrierseqxl_docker.sh```
 
