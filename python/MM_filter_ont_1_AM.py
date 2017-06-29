@@ -3,9 +3,9 @@ import math
 from Tkinter import Tk
 
 
-name = '/DataFolder/02_seqtk/unmapped_reads.fastq'
+name = '/$DataFolder/02_seqtk/unmapped_reads.fastq'
 qs = 9
-output = '/DataFolder/03_fastq9/unmapped_reads_q9'
+output = '/$DataFolder/03_fastq9/unmapped_reads_q9'
 
 count = 0
 for rec in SeqIO.parse(name, "fastq"):
