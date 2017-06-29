@@ -109,7 +109,7 @@ cp $DataFolder/04_fqtrim_dusted/unmapped_reads_q9_dusted.fasta $DataFolder/05_ta
 docker run $DockerOption grep -c ">" $DockerPath/05_target_reads/carrierseq_out.fasta > $DataFolder/05_target_reads/carrierseq_out.txt
 
 # 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
-docker run $DockerOption grep -Eio "_ch[0-9]+_" $DockerPath/fastq/all_reads.fastq | awk '!seen[$0]++' > $DataFolder/06_poisson_calculation/channels_used.lst
+docker run $DockerOption grep -Eio "_ch[0-9]+_" $DockerPath/fastq/all_reads.fastq | awk '!seen[$0]++' | sed 's/_//g' > $DataFolder/06_poisson_calculation/channels_used.lst
 
 # 06.01 - count unique channels (n/512)
 docker run $DockerOption grep -c "ch" $DockerPath/06_poisson_calculation/channels_used.lst > $DataFolder/06_poisson_calculation/channels_in_use.txt
