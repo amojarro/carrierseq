@@ -5,10 +5,9 @@
 # angelmojarro.com
 
 # Find and replace <reference_1> with your reference genome
-# Find and replace <reference_2> with your reference genome for XL
 
 # your working directory
-DataFolder="/User/<you>/your/working/directory" # the DataFolder contains the fastq, python, and reference folders containing your all_reads.fast file, the included quality filter script, and *.fa reference genomes
+DataFolder="your/working/directory" # the DataFolder contains the fastq, python, and reference folders containing your all_reads.fast file, the included quality filter script, and *.fa reference genomes
 FastQ="$DataFolder/fastq" # fastq to be analyzed - "all_reads.fastq"
 Reference="$DataFolder/reference" # reference genome(s). example - "lambda/lambda.fa"
 PythonScript="$DataFolder/python" # fastq quality filter python script by Michael Micorescu <Michael dot Micorescu at nanoporetech dot com> and edited by Angel Mojarro
@@ -23,11 +22,6 @@ mkdir -p $DataFolder/04_fqtrim_dusted # discard low complexity reads
 mkdir -p $DataFolder/04_01_low_complexity_reads # save low-complexity reads
 mkdir -p $DataFolder/05_target_reads # final output reads to be analyzed if target is unknown
 mkdir -p $DataFolder/06_poisson_calculation # calculations for sorting "real" reads versus "possible noise"
-
-
-# -02 bwa - index reference genome #2
-# Cmd="bwa index"
-# $Cmd $DataFolder/reference/<reference_2>/<reference_2>.fa
 
 # -01 bwa - index reference genome #1
 Cmd="bwa index"
@@ -120,7 +114,3 @@ python $DataFolder/python/calculate_lambda.py > $DataFolder/06_poisson_calculati
 
 # 06.02.1 python - calculate x_critical
 python $DataFolder/python/xcrit.py > $DataFolder/06_poisson_calculation/read_channel_threshold.txt
-
-
-
-
