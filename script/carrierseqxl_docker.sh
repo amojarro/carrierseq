@@ -8,7 +8,7 @@
 # Find and replace <reference_2> with your reference genome
 
 # your working directory
-DataFolder="/User/<you>/your/working/directory" # the DataFolder contains the fastq, python, and reference folders containing your all_reads.fast file, the included quality filter script, and *.fa reference genomes
+DataFolder="your/working/directory" # the DataFolder contains the fastq, python, and reference folders containing your all_reads.fast file, the included quality filter script, and *.fa reference genomes
 FastQ="$DataFolder/fastq" # fastq to be analyzed - "all_reads.fastq"
 Reference="$DataFolder/reference" # reference genome(s). example - "lambda/lambda.fa"
 PythonScript="$DataFolder/python" # fastq quality filter python script by Michael Micorescu <Michael dot Micorescu at nanoporetech dot com> and edited by Angel Mojarro
