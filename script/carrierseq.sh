@@ -22,13 +22,8 @@ mkdir -p $DataFolder/03_01_low_quality_reads # save low-quality reads
 mkdir -p $DataFolder/04_fqtrim_dusted # discard low complexity reads
 mkdir -p $DataFolder/04_01_low_complexity_reads # save low-complexity reads
 mkdir -p $DataFolder/05_target_reads # final output reads to be analyzed if target is unknown
-# CarrierSeqXL Begins 
-# mkdir -p $DataFolder/06_bwa_<reference_2> # map target reads to 2nd reference genome
-# mkdir -p $DataFolder/07_samtools_<reference_2> # extract mapped sam file
-# mkdir -p $DataFolder/08_samtools_unknown_reads # extract unmapped sam file
-# mkdir -p $DataFolder/09_seqtk_<reference_2> # extract mapped reads
-# mkdir -p $DataFolder/10_seqtk_unknown_reads # extract unmapped reads
-# mkdir -p $DataFolder/11_final # write final "target" reads to be analyzed
+mkdir -p $DataFolder/06_poisson_calculation # calculations for sorting "real" reads versus "possible noise"
+
 
 # -02 bwa - index reference genome #2
 # Cmd="bwa index"
@@ -114,52 +109,18 @@ cp $DataFolder/04_fqtrim_dusted/unmapped_reads_q9_dusted.fasta $DataFolder/05_ta
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $DataFolder/05_target_reads/carrierseq_out.fasta > $DataFolder/05_target_reads/carrierseq_out.txt
 
-# 06 Map carrierseq_out.fastq to reference genome 2/2
-# Cmd="bwa mem -x ont2d -t 6" # -t, --threads check your cpu, -t 6 default on my 4 GHz Intel Core i7
-# $Cmd $DataFolder/reference/<reference_2>/<reference_2>.fa $DataFolder/05_target_reads/carrierseq_out.fastq > $DataFolder/06_bwa_<reference_2>/bwa_<reference_2>.sam
+# 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
+grep -Eio "_ch[0-9]+_" $DataFolder/fastq/all_reads.fastq | awk '!seen[$0]++' > $DataFolder/06_poisson_calculation/channels_used.lst
 
-# 07 samtools - extract **mapped** reads as sam file
-# Cmd="samtools view -S -F4"
-# $Cmd $DataFolder/06_bwa_<reference_2>/bwa_<reference_2>.sam > $DataFolder/07_samtools_<reference_2>/bwa_<reference_2>_mapped.sam
+# 06.01 - count unique channels (n/512)
+grep -c "ch" $DataFolder/06_poisson_calculation/channels_used.lst > $DataFolder/06_poisson_calculation/channels_in_use.txt
 
-# 07.1 samtools - identify mapped reads
-# cut -f1 $DataFolder/07_samtools_<reference_2>/bwa_<reference_2>_mapped.sam | sort | uniq > $DataFolder/07_samtools_<reference_2>/bwa_<reference_2>_mapped_reads.lst
+# 06.02 python - calculate lambda for poisson calculation
+python $DataFolder/python/calculate_lambda.py > $DataFolder/06_poisson_calculation/lambda_value.txt
 
-# 08 samtools - extract **un-mapped** reads as sam file
-# Cmd="samtools view -S -f4"
-# $Cmd $DataFolder/06_bwa_<reference_2>/bwa_<reference_2>.sam > $DataFolder/08_samtools_unknown_reads/bwa_unknown_unmapped.sam
+# 06.02.1 python - calculate x_critical
+python $DataFolder/python/xcrit.py > $DataFolder/06_poisson_calculation/read_channel_threshold.txt
 
-# 08.1 samtools - identify unmapped reads
-# cut -f1 $DataFolder/08_samtools_unknown_reads/bwa_unknown_unmapped.sam | sort | uniq > $DataFolder/08_samtools_unknown_reads/bwa_unknown_unmapped_reads.lst
 
-# 9 seqtk - extract **mapped** reads as fastq file
-# Cmd="seqtk subseq"
-# $Cmd $DataFolder/05_target_reads/carrierseq_out.fastq $DataFolder/07_samtools_<reference_2>/bwa_<reference_2>_mapped_reads.lst > $DataFolder/09_seqtk_<reference_2>/<reference_2>_reads.fastq
 
-# 9.1 seqtk - make fasta file from mapped fastq
-# Cmd="seqtk seq -a"
-# $Cmd $DataFolder/09_seqtk_<reference_2>/<reference_2>_reads.fastq > $DataFolder/09_seqtk_<reference_2>/<reference_2>_reads.fasta
-
-# 9.2 grep - count mapped reads from fasta file
-# grep -c ">" $DataFolder/09_seqtk_<reference_2>/<reference_2>_reads.fasta > $DataFolder/09_seqtk_<reference_2>/<reference_2>_reads.txt
-
-# 10 seqtk - extract **un-mapped** reads as fastq file
-# Cmd="seqtk subseq"
-# $Cmd $DataFolder/05_target_reads/carrierseq_out.fastq $DataFolder/08_samtools_unknown_reads/bwa_unknown_unmapped_reads.lst > $DataFolder/10_seqtk_unknown_reads/unknown_reads.fastq
-
-# 10.1 seqtk - make fasta file from unmapped fastq
-# Cmd="seqtk seq -a"
-# $Cmd $DataFolder/10_seqtk_unknown_reads/unknown_reads.fastq > $DataFolder/10_seqtk_unknown_reads/unknown_reads.fasta
-
-# 10.2 grep - count unmapped reads from fasta file
-# grep -c ">" $DataFolder/10_seqtk_unknown_reads/unknown_reads.fasta > $DataFolder/10_seqtk_unknown_reads/unknown_reads.txt
-
-# 11 copy <reference_2> reads and unknown reads to 10_final folder for further analysis
-# cp $DataFolder/09_seqtk_<reference_2>/<reference_2>_reads.fastq $DataFolder/11_final/carrierseq_<reference_2>.fastq
-# cp $DataFolder/10_seqtk_unknown_reads/unknown_reads.fastq $DataFolder/11_final/carrierseq_unknown.fastq
-
-# 11.1 Final seqtk - make fasta file from fastq
-# Cmd="seqtk seq -a"
-# $Cmd $DataFolder/11_final/carrierseq_<reference_2>.fastq > $DataFolder/11_final/carrierseq_<reference_2>.fasta
-# $Cmd $DataFolder/11_final/carrierseq_unknown.fastq > $DataFolder/11_final/carrierseq_unknown.fasta
 
