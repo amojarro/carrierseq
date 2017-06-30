@@ -45,7 +45,7 @@ Find and replace <reference_1> and <reference_2> (if using CarrierSeqXL) with yo
 
 Then ```./carrierseq.sh``` or ```./carrierseqxl.sh```
 
- ** python/ (local machine only)**
+ ** python/ (local machine option only)**
 
 Edit the appropriate *.py file and configure your working directory as such:
 
