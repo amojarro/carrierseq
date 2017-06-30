@@ -45,9 +45,7 @@ Find and replace <reference_1> and <reference_2> (if using CarrierSeqXL) with yo
 
 Then ```./carrierseq.sh``` or ```./carrierseqxl.sh```
 
- ** python/ **
-
-(local machine only)
+ ** python/ (local machine only)**
 
 Edit the appropriate *.py file and configure your working directory as such:
 
@@ -57,7 +55,16 @@ reads_txt = open('<your/working/directory>/05_target_reads/carrierseq_out.txt', 
 channels_txt = open('<your/working/directory>/06_poisson_calculation/channels_in_use.txt', 'r')
 ```
 
+MM_filter_ont_1_AM.py
+```
+name = '<your/working/directory>/02_seqtk/unmapped_reads.fastq'
+output = '<your/working/directory>/03_fastq9/unmapped_reads_q9'
+```
 
+xcrit.py
+```
+lambda_value_txt = open('<your/working/directory>/06_poisson_calculation/lambda_value.txt', 'r')
+```
 
 ### Docker
 
