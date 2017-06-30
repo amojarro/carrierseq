@@ -30,10 +30,12 @@ Alternatively, use Docker and the Docker scripts.
 ## Using CarrierSeq and CarrierSeqXL
 ### Local Machine
 
+scripts/
+
 Edit the appropriate *.sh file and configure your working directory as such:
 
 ```
-DataFolder="your/working/directory" 
+DataFolder="<your/working/directory>" 
 
 $DataFolder/fastq # fastq reads file to be analyzed - "all_reads.fastq"
 $DataFolder/reference # reference genome(s). example - "lambda/lambda.fa"
@@ -42,6 +44,19 @@ $DataFolder/python # fastq quality filter python script by Michael Micorescu <Mi
 Find and replace <reference_1> and <reference_2> (if using CarrierSeqXL) with your reference genome(s).
 
 Then ```./carrierseq.sh``` or ```./carrierseqxl.sh```
+
+python/
+
+(local machine only)
+
+Edit the appropriate *.py file and configure your working directory as such:
+
+calculate_lamnda.py
+```
+reads_txt = open('<your/working/directory>/05_target_reads/carrierseq_out.txt', 'r')
+channels_txt = open('<your/working/directory>/06_poisson_calculation/channels_in_use.txt', 'r')
+```
+
 
 
 ### Docker
