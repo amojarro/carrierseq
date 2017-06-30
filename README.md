@@ -30,7 +30,7 @@ Alternatively, use Docker and the Docker scripts.
 ## Using CarrierSeq and CarrierSeqXL
 ### Local Machine
 
-scripts/
+* * scripts/ * *
 
 Edit the appropriate *.sh file and configure your working directory as such:
 
@@ -45,7 +45,7 @@ Find and replace <reference_1> and <reference_2> (if using CarrierSeqXL) with yo
 
 Then ```./carrierseq.sh``` or ```./carrierseqxl.sh```
 
-python/
+* * python/ * *
 
 (local machine only)
 
