@@ -1,7 +1,5 @@
 # CarrierSeq: 
 
-CarrierSeq and CarrierSeqXL.
-
 ## Requirements
 
 The CarrierSeq scripts require the following dependencies to be installed on your local machine.
@@ -11,7 +9,7 @@ seqtk - https://github.com/lh3/seqtk</br>
 samtools - https://github.com/samtools/samtools</br>
 fqtrim - https://ccb.jhu.edu/software/fqtrim/</br>
 
-Alternatively, use Docker and the Docker scripts.
+Alternatively, use Docker and the Docker script.
 
 ## Using Docker
 ### Building Your Own Docker Image
@@ -27,48 +25,17 @@ Alternatively, use Docker and the Docker scripts.
 1. Start docker.
 2. run ```docker pull mojarro/carrierseq:latest```
 
-## Using CarrierSeq and CarrierSeqXL
-### Local Machine
+## Using CarrierSeq 
 
- ** scripts/ **
+Reads to be analyzed must be compiled into a single fastq file and the carrier reference genome must be in fasta format.
 
-Edit the appropriate *.sh file and configure your working directory as such:
+### Locally
 
-```
-DataFolder="<your/working/directory>" 
+Run CarrierSeq with:
 
-$DataFolder/fastq # fastq reads file to be analyzed - "all_reads.fastq"
-$DataFolder/reference # reference genome(s). example - "lambda/lambda.fa"
-$DataFolder/python # fastq quality filter python script by Michael Micorescu <Michael dot Micorescu at nanoporetech dot com> and edited by Angel Mojarro
-```
-Find and replace <reference_1> and <reference_2> (if using CarrierSeqXL) with your reference genome(s).
-
-Then ```./carrierseq.sh``` or ```./carrierseqxl.sh```
-
- ** python/ (local machine option only)**
-
-Edit the appropriate *.py file and configure your working directory as such:
-
-calculate_lamnda.py
-```
-reads_txt = open('<your/working/directory>/05_target_reads/carrierseq_out.txt', 'r')
-channels_txt = open('<your/working/directory>/06_poisson_calculation/channels_in_use.txt', 'r')
-```
-
-MM_filter_ont_1_AM.py
-```
-name = '<your/working/directory>/02_seqtk/unmapped_reads.fastq'
-output = '<your/working/directory>/03_fastq9/unmapped_reads_q9'
-```
-
-xcrit.py
-```
-lambda_value_txt = open('<your/working/directory>/06_poisson_calculation/lambda_value.txt', 'r')
-```
+```./carrierseq.sh <all_reads.fastq> <reference_genome.fasta> <q-score> <p-value>```
 
 ### Docker
 
-Follow the same steps as above except edit ```CarrierSeq="mojarro/carrierseq:latest"``` if youd decide to build your own Docker Image.
-
-Make sure Docker is running then simply ```./carrierseq_docker.sh``` or ```./carrierseqxl_docker.sh```
+```./carrierseq_docker.sh <all_reads.fastq> <reference_genome.fasta> <q-score> <p-value>```
 
