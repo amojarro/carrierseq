@@ -1,8 +1,10 @@
-# CarrierSeq: 
+# CarrierSeq: a sequence analysis workflow for low-input nanopore sequencing
+
+## About
 
 ## Requirements
 
-The CarrierSeq scripts require the following dependencies to be installed on your local machine.
+The CarrierSeq scripts requires the following dependencies to be installed on your local machine.
 
 bwa - https://github.com/lh3/bwa</br>
 seqtk - https://github.com/lh3/seqtk</br>
