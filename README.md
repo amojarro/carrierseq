@@ -4,7 +4,7 @@
 
 bioRxiv doi: xxx.xxx.xxx
 
-CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing. For many environmental samples, the total extractable DNA is far below the current input requirements of nanopore sequencing, preventing “sample to sequence” metagenomics from low-biomass or recalcitrant samples. One approach is to employ carrier sequencing, a method to sequence low-input DNA by preparing the target DNA with a genomic carrier to achieve ideal library preparation and sequencing stoichiometry without amplification. We can then apply CarrierSeq to identify the low-input target reads from the genomic carrier
+CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing which utlizes a genomic carrier.
 
 ## Requirements
 
