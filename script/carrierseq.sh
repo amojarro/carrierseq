@@ -17,7 +17,6 @@ Reads to be analyzed must be compiled into a single fastq file and the reference
      -p          User-defined p-value 
                  (default = 0.0001 or 0.05/512 active channels)
      -o          Output directory
-     -v          Verbose mode
 EOF
 }
 
@@ -28,7 +27,6 @@ bwa_threads="1"
 q_score="9"
 p_value="0.0001"
 output_folder=""
-verbose=0
 
 OPTIND=1   
 
@@ -49,9 +47,7 @@ while getopts "h?i:r:t:q:p:o:v:" opt; do
     p)  p_value=$OPTARG
         ;;
     o)  output_folder=$OPTARG
-        ;;
-    v)  verbose=1
-        ;;        
+        ;;       
     esac
 done
 
@@ -77,6 +73,8 @@ mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if t
 # -01 bwa - Index carrier reference genome
 Cmd="bwa index"
 $Cmd $reference_genome
+
+: <<'END'
 
 # 00 bwa - map $all_reads to the $reference_genome
 Cmd="bwa mem -x ont2d -t $bwa_threads"
@@ -147,27 +145,25 @@ $Cmd $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fastq > $
 # 04.01.3 grep - count low-complexity reads from fasta file
 grep -c ">" $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fasta > $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.txt
 
-: <<'END'
-
-05 copy "high-quality reads" qc and higher + complex reads to 05_target_reads for further analysis
+# 05 copy "high-quality reads" qc and higher + complex reads to 05_target_reads for further analysis
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq $output_folder/05_reads_of_interest/carrierseq_roi.fastq
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta $output_folder/05_reads_of_interest/carrierseq_roi.fasta 
 
-05.1 grep - count target reads from fasta file
+# 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
 
-06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
+END
+
+# 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
 grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst
 
-06.01 - count unique channels (n/512)
+# 06.01 - count unique channels (n/512)
 grep -c "ch" $output_folder/06_poisson_calculation/channels_used.lst > $output_folder/06_poisson_calculation/channels_in_use.txt
 
-06.02 python - calculate lambda for poisson calculation
+# 06.02 python - calculate lambda for poisson calculation
 python calculate_lambda.py > $output_folder/06_poisson_calculation/lambda_value.txt
 
-06.02.1 python - calculate x_critical
+# 06.02.1 python - calculate x_critical
 python xcrit.py > $output_folder/06_poisson_calculation/read_channel_threshold.txt
-
-END
 
 # End of file
