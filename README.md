@@ -42,8 +42,8 @@ Run CarrierSeq with:
 Then select your working directoty, fastq file, reference genome, custom q-score and p-value.
 
 CarrierSeq will generate the following folders and files within your working directory:
-
-```00_bwa/bwa_mapped.sam #
+```
+00_bwa/bwa_mapped.sam #
 
 01_samtools/bwa_unmapped_reads.lst #
            /bwa_unmapped.sam       #
@@ -86,4 +86,5 @@ CarrierSeq will generate the following folders and files within your working dir
 
 08_target_reads/carrierseq_out.fasta #
                /carrierseq_out.fastq #
-               /carrierseq_out.txt # ```
+               /carrierseq_out.txt #
+```
