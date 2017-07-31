@@ -37,9 +37,7 @@ Reads to be analyzed must be compiled into a single fastq file and the carrier r
 
 Run CarrierSeq with:
 
-```./carrierseq.sh``` or with docker ```./carrierseq_docker.sh```
-
-Then select your working directoty, fastq file, reference genome, custom q-score and p-value.
+```./carrierseq.sh <path/to/working/directory> <path/to/input.fastq> <path/to/reference.fasta> <q-score> <p-value>```
 
 ## CarrierSeq Output 
 
