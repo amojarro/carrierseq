@@ -37,7 +37,7 @@ Reads to be analyzed must be compiled into a single fastq file and the carrier r
 
 Run CarrierSeq with:
 
-```./carrierseq.sh <path/to/working/directory> <path/to/input.fastq> <path/to/reference.fasta> <q-score> <p-value>```
+```./carrierseq.sh <path/to/working/directory> <input.fastq> <reference.fasta> <q-score> <p-value>```
 
 ## CarrierSeq Output 
 
