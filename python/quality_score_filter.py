@@ -41,4 +41,3 @@ output_handle.close()
 output_handle = open(output +'.fq', "w")
 SeqIO.write(qual_sequences, output_handle, "fastq")
 output_handle.close()
-
