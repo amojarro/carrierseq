@@ -1,1 +1,0 @@
-your carrier reference genome. ex. - lambda_ecoli.fa 
