@@ -41,6 +41,8 @@ Run CarrierSeq with:
 
 Then select your working directoty, fastq file, reference genome, custom q-score and p-value.
 
+## CarrierSeq Output 
+
 CarrierSeq will generate the following folders and files within your working directory:
 ```
 00_bwa/bwa_mapped.sam #
