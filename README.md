@@ -17,19 +17,13 @@ fqtrim - https://ccb.jhu.edu/software/fqtrim/</br>
 
 Alternatively, use Docker and the Docker script.
 
-## Using Docker
-### Building Your Own Docker Image
+## Using Docker and Dockerhub
 
 1. Download & install Docker - https://www.docker.com/
-2. Start Docker and increase threads/memory if possible, the carrierseq(XL).sh scripts are set to 6 CPUs and 18 GB RAM.
-3. Save Dockerfile to your directory.
-4. ```cd to/your/directory```
-5. ```docker build -t <name-your-image> .```
-
-### Or Pull from DockerHub
-
-1. Start docker.
+1. Start docker
 2. run ```docker pull mojarro/carrierseq:latest```
+
+That's it, no installing dependencies!
 
 ## Using CarrierSeq 
 
@@ -37,54 +31,71 @@ Reads to be analyzed must be compiled into a single fastq file and the carrier r
 
 Run CarrierSeq with:
 
-```./carrierseq.sh <path/to/output/directory> <input.fastq> <reference.fasta> <q-score> <p-value>```
+```./carrierseq.sh -i <input.fastq> -r <reference.fasta> -q <q-score> -p <p-value> -o <output_directory>```
+
+or with Docker...
+
+```./carrierseq_docker.sh -i <input.fastq> -r <reference.fasta> -q <q-score> -p <p-value> -o <output_directory>```
+
+CarrierSeq will use the default q-score and p-value if -q and -p are not defined:
+
+```
+q_score = 9
+p_value = 0.0001 or 0.05/512 active channels
+```
+
+Also, you may need to make the script executable with:
+
+```chmod +x path/to/carrierseq.sh``
 
 ## CarrierSeq Output 
 
 CarrierSeq will generate the following folders and files within your working directory:
+
 ```
-00_bwa/bwa_mapped.sam #
+00_bwa/bwa_mapped.sam 
 
-01_samtools/bwa_unmapped_reads.lst #
-           /bwa_unmapped.sam       #
+01_samtools/bwa_unmapped_reads.lst 
+           /bwa_unmapped.sam       
 
-02_seqtk/unmapped_reads.fasta #  
-        /unmapped_reads.fastq #
-        /unmapped_reads.txt   #
+02_seqtk/unmapped_reads.fasta 
+        /unmapped_reads.fastq 
+        /unmapped_reads.txt   
 
-03_01_low_quality_reads/low_quality_unmapped_reads.fasta #
-                       /low_quality_unmapped_reads.fastq #
-                       /low_quality_unmapped_reads.lst   #
-                       /low_quality_unmapped_reads.txt   #
+03_01_low_quality_reads/low_quality_unmapped_reads.fasta 
+                       /low_quality_unmapped_reads.fastq 
+                       /low_quality_unmapped_reads.lst   
+                       /low_quality_unmapped_reads.txt   
 
-03_fastq9/unmapped_reads_q9.fa  #
-         /unmapped_reads_q9.fq  #
-         /unmapped_reads_q9.lst #
-         /unmapped_reads_q9.txt #
+03_fastqc/unmapped_reads_qc.fa  
+         /unmapped_reads_qc.fq  
+         /unmapped_reads_qc.lst 
+         /unmapped_reads_qc.txt 
 
-04_01_low_complexity_reads/low_complexity_reads_q9.fasta #
-                          /low_complexity_reads_q9.fastq #
-                          /low_complexity_reads_q9.lst   #
-                          /low_complexity_reads_q9.txt   #
+04_01_low_complexity_reads/low_complexity_reads_qc.fasta 
+                          /low_complexity_reads_qc.fastq 
+                          /low_complexity_reads_qc.lst   
+                          /low_complexity_reads_qc.txt   
 
-04_fqtrim_dusted/unmapped_reads_q9_dusted.fasta #
-                /unmapped_reads_q9_dusted.fastq #
-                /unmapped_reads_q9_dusted.lst   #
-                /unmapped_reads_q9_dusted.txt   #
+04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta 
+                /unmapped_reads_qc_dusted.fastq
+                /unmapped_reads_qc_dusted.lst 
+                /unmapped_reads_qc_dusted.txt
 
-05_reads_of_interest/x #
-                    /x #
-                    /x #
+05_reads_of_interest/carrierseq_roi.fasta
+                    /carrierseq_roi.fastq
+                    /carrierseq_roi.txt
 
-06_poisson_caculation/x #
-                     /x #
-                     /x #
+06_poisson_caculation/channels_used.lst
+                     /channels_in_use.txt
+                     /lambda_value.txt
+                     /read_channel_threshold.txt
 
-07_hqnrs/x #
-        /x #
-        /x #
+07_hqnrs/carrierseq_hqnrs.fasta
+        /carrierseq_hqnrs.fastq
+        /carrierseq_hqnrs.txt
 
-08_target_reads/carrierseq_out.fasta #
-               /carrierseq_out.fastq #
-               /carrierseq_out.txt #
+08_target_reads/carrierseq_out.fasta
+               /carrierseq_out.fastq
+               /carrierseq_out.txt
 ```
