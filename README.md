@@ -46,7 +46,7 @@ p_value = 0.0001 or 0.05/512 active channels
 
 Also, you may need to make the script executable with:
 
-```chmod +x path/to/carrierseq.sh``
+```chmod +x path/to/carrierseq.sh```
 
 ## CarrierSeq Output 
 
