@@ -70,11 +70,11 @@ mkdir -p $output_folder/06_poisson_calculation # calculations for sorting "real"
 mkdir -p $output_folder/07_hqnrs #
 mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if target is unknown
 
+: <<'END'
+
 # -01 bwa - Index carrier reference genome
 Cmd="bwa index"
 $Cmd $reference_genome
-
-: <<'END'
 
 # 00 bwa - map $all_reads to the $reference_genome
 Cmd="bwa mem -x ont2d -t $bwa_threads"
