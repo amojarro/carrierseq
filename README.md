@@ -101,6 +101,7 @@ CarrierSeq will generate the following folders and files within your working dir
                      /channels_in_use.txt
                      /lambda_value.txt
                      /read_channel_threshold.txt
+                     
 # Likely HQNRs (reads/channel > xcrit) 
 07_hqnrs/carrierseq_hqnrs.fasta
         /carrierseq_hqnrs.fastq
