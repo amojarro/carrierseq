@@ -78,8 +78,6 @@ mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if t
 Cmd="bwa index"
 $Cmd $reference_genome
 
-: <<'END'
-
 # 00 bwa - map $all_reads to the $reference_genome
 Cmd="bwa mem -x ont2d -t $bwa_threads"
 $Cmd $reference_genome $all_reads > $output_folder/00_bwa/bwa_mapped.sam
@@ -149,7 +147,7 @@ $Cmd $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fastq > $
 # 04.01.3 grep - count low-complexity reads from fasta file
 grep -c ">" $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fasta > $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.txt
 
-END
+: <<'END'
 
 05 copy "high-quality reads" qc and higher + complex reads to 05_target_reads for further analysis
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq $output_folder/05_reads_of_interest/carrierseq_roi.fastq
@@ -169,5 +167,7 @@ python calculate_lambda.py > $output_folder/06_poisson_calculation/lambda_value.
 
 06.02.1 python - calculate x_critical
 python xcrit.py > $output_folder/06_poisson_calculation/read_channel_threshold.txt
+
+END
 
 # End of file
