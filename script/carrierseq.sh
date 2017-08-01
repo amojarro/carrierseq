@@ -12,7 +12,7 @@ CarrierSeq requires bwa, samtools, seqtk, and fqtrim.
 Reads to be analyzed must be compiled into a single fastq file and the reference genome must be in fasta format.
      -i          All reads to be analyzed *.fastq
      -r          Carrier reference genome *.fasta
-     -t          Number of threads used for BWA mapping
+     -t          Number of threads used for BWA mapping (default = 1)
      -q          User-defined quality (phred) score (default = 9)
      -p          User-defined p-value 
                  (default = 0.0001 or 0.05/512 active channels)
