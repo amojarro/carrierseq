@@ -70,15 +70,20 @@ mkdir -p $output_folder/06_poisson_calculation # calculations for sorting "real"
 mkdir -p $output_folder/07_hqnrs #
 mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if target is unknown
 
+
+
 # -01 bwa - Index carrier reference genome
+echo Indexing reference genome...
 Cmd="bwa index"
 $Cmd $reference_genome
 
 # 00 bwa - map $all_reads to the $reference_genome
+echo Mapping all reads to reference genome...
 Cmd="bwa mem -x ont2d -t $bwa_threads"
 $Cmd $reference_genome $all_reads > $output_folder/00_bwa/bwa_mapped.sam
 
 # 01 samtools - extract unmapped reads as sam file
+echo Extracting unmapped reads...
 Cmd="samtools view -S -f4"
 $Cmd $output_folder/00_bwa/bwa_mapped.sam > $output_folder/01_samtools/bwa_unmapped.sam
 
@@ -95,12 +100,17 @@ $Cmd $output_folder/02_seqtk/unmapped_reads.fastq > $output_folder/02_seqtk/unma
 
 # 02.2 grep - count reads from fasta file
 grep -c ">" $output_folder/02_seqtk/unmapped_reads.fasta > $output_folder/02_seqtk/unmapped_reads.txt
+echo Total unmapped reads:
+cat $output_folder/02_seqtk/unmapped_reads.txt
 
 # 03 quality_score_filter.py - discard low-quality reads
+echo Applying quality filter...
 python python/quality_score_filter.py $output_folder/02_seqtk/unmapped_reads.fastq $output_folder/03_fastqc/unmapped_reads_qc $q_score
 
 # 03.1 grep - count "high-quality" reads
 grep -c ">" $output_folder/03_fastqc/unmapped_reads_qc.fa > $output_folder/03_fastqc/unmapped_reads_qc.txt
+echo Reads ≥ $q_score quality score:
+cat $output_folder/03_fastqc/unmapped_reads_qc.txt
 
 # 03.01 grep - identify discarded low-quality reads
 grep -e ">" $output_folder/03_fastqc/unmapped_reads_qc.fa | awk '{print $1}' | sed 's/^.//' > $output_folder/03_fastqc/unmapped_reads_qc.lst
@@ -118,6 +128,7 @@ $Cmd $output_folder/03_01_low_quality_reads/low_quality_unmapped_reads.fastq > $
 grep -c ">" $output_folder/03_01_low_quality_reads/low_quality_unmapped_reads.fasta > $output_folder/03_01_low_quality_reads/low_quality_unmapped_reads.txt
 
 # 04 fqtrim - discard low complexity reads
+echo Applying DUST filter...
 Cmd="fqtrim -D"
 $Cmd $output_folder/03_fastqc/unmapped_reads_qc.fq > $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq
 
@@ -127,6 +138,8 @@ $Cmd $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq > $output_fo
 
 # 04.2 grep - count dusted reads from fasta file
 grep -c ">" $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta > $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.txt
+echo Reads after DUST filter:
+cat $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.txt
 
 # 04.01 - identify discarded low-complexity reads
 grep -e ">" $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta | awk '{print $1}' | sed 's/^.//' > $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.lst
@@ -144,13 +157,14 @@ $Cmd $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fastq > $
 grep -c ">" $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fasta > $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.txt
 
 # 05 copy "high-quality reads" qc and higher + complex reads to 05_target_reads for further analysis
+echo Saving Reads of Interest...
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq $output_folder/05_reads_of_interest/carrierseq_roi.fastq
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta $output_folder/05_reads_of_interest/carrierseq_roi.fasta 
+echo Done!
 
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
-
-# Start Poisson Calculation
+echo Starting Poisson Calculation...
 
 ChannelsInUse="$output_folder/06_poisson_calculation/channels_in_use.txt"
 TotalROIs="$output_folder/05_reads_of_interest/carrierseq_roi.txt"
@@ -165,11 +179,15 @@ grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisso
 
 # 06.01 - count unique channels (n/512)
 grep -c "ch" $output_folder/06_poisson_calculation/channels_used.lst > $output_folder/06_poisson_calculation/channels_in_use.txt
+echo Channels in use:
+cat $output_folder/06_poisson_calculation/channels_in_use.txt
 
 # 06.02 python - calculate lambda for poisson calculation
+echo Calculating lambda value and x_crit...
 python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/lambda_value.txt
 
 # 06.02.1 python - calculate x_critical
 python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
+cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
 # End of file
