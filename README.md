@@ -65,7 +65,7 @@ CarrierSeq will generate the following folders and files within your working dir
         /unmapped_reads.fastq 
         /unmapped_reads.txt   
         
-# Reads above the given q-score threshold (default = 9).
+# Reads equal to or greater than a given q-score threshold (default = 9).
 03_fastqc/unmapped_reads_qc.fa  
          /unmapped_reads_qc.fq  
          /unmapped_reads_qc.lst 
