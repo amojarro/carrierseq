@@ -70,8 +70,6 @@ mkdir -p $output_folder/06_poisson_calculation # calculations for sorting "real"
 mkdir -p $output_folder/07_hqnrs #
 mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if target is unknown
 
-: <<'END'
-
 # -01 bwa - Index carrier reference genome
 Cmd="bwa index"
 $Cmd $reference_genome
@@ -152,7 +150,7 @@ cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta $output_folder
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
 
-END
+: <<'END'
 
 # 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
 grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst
@@ -165,5 +163,7 @@ python calculate_lambda.py > $output_folder/06_poisson_calculation/lambda_value.
 
 # 06.02.1 python - calculate x_critical
 python xcrit.py > $output_folder/06_poisson_calculation/read_channel_threshold.txt
+
+END
 
 # End of file
