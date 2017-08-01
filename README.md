@@ -27,26 +27,28 @@ That's it, no installing dependencies!
 
 ## Using CarrierSeq 
 
+Note: You may need to first make the script executable with:
+
+```chmod +x path/to/carrierseq.sh```
+
 Reads to be analyzed must be compiled into a single fastq file and the carrier reference genome must be in fasta format.
 
 Run CarrierSeq with:
 
-```./carrierseq.sh -i <input.fastq> -r <reference.fasta> -q <q-score> -p <p-value> -o <output_directory>```
+```./carrierseq.sh -i <input.fastq> -r <reference.fasta> -q <q_score> -p <p_value> -o <output_directory> -t <bwa_threads>```
 
 or with Docker...
 
-```./carrierseq_docker.sh -i <input.fastq> -r <reference.fasta> -q <q-score> -p <p-value> -o <output_directory>```
+```./carrierseq_docker.sh -i <input.fastq> -r <reference.fasta> -q <q_score> -p <p_value> -o <output_directory> -t <bwa_threads>```
 
-CarrierSeq will use the default q-score and p-value if -q and -p are not defined:
+-i -r and -o are mandatory flags.
+CarrierSeq will use the default values if -q -p -t are not defined:
 
 ```
+bwa_threads = 1 
 q_score = 9
 p_value = 0.0001 or 0.05/512 active channels
 ```
-
-Also, you may need to make the script executable with:
-
-```chmod +x path/to/carrierseq.sh```
 
 ## CarrierSeq Output 
 
