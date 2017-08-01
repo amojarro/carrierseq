@@ -41,8 +41,7 @@ or with Docker...
 
 ```./carrierseq_docker.sh -i <input.fastq> -r <reference.fasta> -q <q_score> -p <p_value> -o <output_directory> -t <bwa_threads>```
 
--i -r and -o are mandatory flags.
-CarrierSeq will use the default values if -q -p -t are not defined:
+-i -r and -o are mandatory flags, CarrierSeq will use the default values if -q -p -t are not defined:
 
 ```
 bwa_threads = 1 
@@ -55,7 +54,6 @@ p_value = 0.0001 or 0.05/512 active channels
 CarrierSeq will generate the following folders and files within your working directory:
 
 ```
-
 # All reads mapped to the carrier reference genome.
 00_bwa/bwa_mapped.sam 
 
