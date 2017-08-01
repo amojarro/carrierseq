@@ -10,8 +10,8 @@ print reads
 
 channels_txt = open(sys.argv[2], 'r')
 channels = channels_txt.read()
-print 'Used Channels (channels_in_use.txt)'
-print channels
+print 'Used Channels (06_poisson_calculation/channels_in_use.txt)'
+print(channels)
 
 lambda_value = (float(reads) / float(channels))
 print 'Lambda:'
