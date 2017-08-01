@@ -4,11 +4,11 @@
 # Angel Mojarro <mojarro at mit dot edu>
 # angelmojarro.com
 
-# Usage info
+# Usage info -h
 show_help() {
 cat << EOF
 Usage: ${0##*/} [-i INPUT] [-r REFERENCE] [-o OUTPUT]...
-CarrierSeq requires bwa, samtools, seqtk, and fqtrim. 
+CarrierSeq requires bwa, samtools, seqtk, and fqtrim.
 Reads to be analyzed must be compiled into a single fastq file and the reference genome must be in fasta format.
      -i          All reads to be analyzed *.fastq
      -r          Carrier reference genome *.fasta
@@ -78,7 +78,7 @@ DockerPath="/carrierseq"
 DockerOptions="-v $output_folder:$DockerPath $CarrierSeq"
 
 # Copy reads and reference genome into temporary folders for Docker
-echo Copying $all_reads & $reference_genome into temporary docker container
+echo Copying reads and reference genome into temporary docker container...
 cp $all_reads $output_folder/fastq_tmp/all_reads.fastq
 cp $reference_genome $output_folder/reference_tmp/reference_genome.fasta
 
@@ -200,9 +200,12 @@ python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_
 python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
 cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
+### Poisson Sort goes here ####
+
 # Cleaning up
-echo Deleting $all_reads & $reference_genome temporary docker files
+echo Deleting temporary reads and reference genome docker files...
 rm -r $output_folder/fastq_tmp
 rm -r $output_folder/reference_tmp
+echo Done!
 
 # End of file
