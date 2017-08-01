@@ -10,9 +10,8 @@ output = sys.argv[2]
 count = 0
 for rec in SeqIO.parse(name, "fastq"):
     count += 1
-print("%i reads in fastq file" % count)
 
-qual_sequences = [] # Setup an empty list
+qual_sequences = []
 
 cnt = 0
 for rec in SeqIO.parse(name, "fastq"):
@@ -29,8 +28,6 @@ for rec in SeqIO.parse(name, "fastq"):
     if av_q >= qs:
 	cnt += 1
         qual_sequences.append(rec)
-
-print cnt,'Quality reads saved'
 
 output_handle = open(output +'.fa', "w")
 SeqIO.write(qual_sequences, output_handle, "fasta")
