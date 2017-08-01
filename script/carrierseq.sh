@@ -150,20 +150,26 @@ cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta $output_folder
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
 
-: <<'END'
+# Start Poisson Calculation
 
+ChannelsInUse="$output_folder/06_poisson_calculation/channels_in_use.txt"
+TotalROIs="$output_folder/05_reads_of_interest/carrierseq_roi.txt"
+LambdaValue="$output_folder/06_poisson_calculation/lambda_value.txt"
+
+##### FOR OLD FASTQ HEADER #####
 # 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
-grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst
+grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst ## OK
+
+##### FOR NEW FASTQ HEADER #####
+# grep -Eio "ch=[0-9]+" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst ## OK
 
 # 06.01 - count unique channels (n/512)
 grep -c "ch" $output_folder/06_poisson_calculation/channels_used.lst > $output_folder/06_poisson_calculation/channels_in_use.txt
 
 # 06.02 python - calculate lambda for poisson calculation
-python calculate_lambda.py > $output_folder/06_poisson_calculation/lambda_value.txt
+python calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/lambda_value.txt
 
 # 06.02.1 python - calculate x_critical
-python xcrit.py > $output_folder/06_poisson_calculation/read_channel_threshold.txt
-
-END
+python xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
 # End of file
