@@ -3,8 +3,6 @@ import math
 from Tkinter import Tk
 import sys
 
-print("Applying quality filter")
-
 name = sys.argv[1]
 qs = float(sys.argv[3])
 output = sys.argv[2]
