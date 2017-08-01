@@ -200,6 +200,7 @@ python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_
 python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
 cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
+# Cleaning up
 echo Deleting $all_reads & $reference_genome temporary docker files
 rm -r $output_folder/fastq_tmp
 rm -r $output_folder/reference_tmp
