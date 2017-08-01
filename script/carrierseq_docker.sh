@@ -78,18 +78,22 @@ DockerPath="/carrierseq"
 DockerOptions="-v $output_folder:$DockerPath $CarrierSeq"
 
 # Copy reads and reference genome into temporary folders for Docker
+echo Copying $all_reads & $reference_genome into temporary docker container
 cp $all_reads $output_folder/fastq_tmp/all_reads.fastq
 cp $reference_genome $output_folder/reference_tmp/reference_genome.fasta
 
 # -01 bwa - Index carrier reference genome
+echo Indexing reference genome...
 Cmd="$DockerOptions bwa index"
 docker run $Cmd $DockerPath/reference_tmp/reference_genome.fasta
 
 # 00 bwa - map $all_reads to the $reference_genome
+echo Mapping all reads to reference genome...
 Cmd="$DockerOptions bwa mem -x ont2d -t $bwa_threads"
 docker run $Cmd $DockerPath/reference_tmp/reference_genome.fasta $DockerPath/fastq_tmp/all_reads.fastq > $output_folder/00_bwa/bwa_mapped.sam
 
 # 01 samtools - extract unmapped reads as sam file
+echo Extracting unmapped reads...
 Cmd="$DockerOptions samtools view -S -f4"
 docker run $Cmd $DockerPath/00_bwa/bwa_mapped.sam > $output_folder/01_samtools/bwa_unmapped.sam
 
@@ -106,12 +110,17 @@ docker run $Cmd $DockerPath/02_seqtk/unmapped_reads.fastq > $output_folder/02_se
 
 # 02.2 grep - count reads from fasta file
 grep -c ">" $output_folder/02_seqtk/unmapped_reads.fasta > $output_folder/02_seqtk/unmapped_reads.txt
+echo Total unmapped reads:
+cat $output_folder/02_seqtk/unmapped_reads.txt
 
 # 03 quality_score_filter.py - discard low-quality reads
+echo Applying quality filter...
 python python/quality_score_filter.py $output_folder/02_seqtk/unmapped_reads.fastq $output_folder/03_fastqc/unmapped_reads_qc $q_score
 
 # 03.1 grep - count "high-quality" reads
 grep -c ">" $output_folder/03_fastqc/unmapped_reads_qc.fa > $output_folder/03_fastqc/unmapped_reads_qc.txt
+echo Reads ≥ $q_score quality score:
+cat $output_folder/03_fastqc/unmapped_reads_qc.txt
 
 # 03.01 grep - identify discarded low-quality reads
 grep -e ">" $output_folder/03_fastqc/unmapped_reads_qc.fa | awk '{print $1}' | sed 's/^.//' > $output_folder/03_fastqc/unmapped_reads_qc.lst
@@ -129,6 +138,7 @@ docker run $Cmd $DockerPath/03_01_low_quality_reads/low_quality_unmapped_reads.f
 grep -c ">" $output_folder/03_01_low_quality_reads/low_quality_unmapped_reads.fasta > $output_folder/03_01_low_quality_reads/low_quality_unmapped_reads.txt
 
 # 04 fqtrim - discard low complexity reads
+echo Applying DUST filter...
 Cmd="$DockerOptions fqtrim -D"
 docker run $Cmd $DockerPath/03_fastqc/unmapped_reads_qc.fq > $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq
 
@@ -138,6 +148,8 @@ docker run $Cmd $DockerPath/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq > $o
 
 # 04.2 grep - count dusted reads from fasta file
 grep -c ">" $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta > $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.txt
+echo Reads after DUST filter:
+cat $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.txt
 
 # 04.01 - identify discarded low-complexity reads
 grep -e ">" $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta | awk '{print $1}' | sed 's/^.//' > $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.lst
@@ -155,13 +167,14 @@ docker run $Cmd $DockerPath/04_01_low_complexity_reads/low_complexity_reads_qc.f
 grep -c ">" $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fasta > $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.txt
 
 # 05 copy "high-quality reads" qc and higher + complex reads to 05_target_reads for further analysis
+echo Saving Reads of Interest...
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fastq $output_folder/05_reads_of_interest/carrierseq_roi.fastq
 cp $output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta $output_folder/05_reads_of_interest/carrierseq_roi.fasta 
+echo Done!
 
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
-
-# Start Poisson Calculation
+echo Starting Poisson Calculation...
 
 ChannelsInUse="$output_folder/06_poisson_calculation/channels_in_use.txt"
 TotalROIs="$output_folder/05_reads_of_interest/carrierseq_roi.txt"
@@ -169,18 +182,26 @@ LambdaValue="$output_folder/06_poisson_calculation/lambda_value.txt"
 
 ##### FOR OLD FASTQ HEADER #####
 # 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
-grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst ## OK
+grep -Eio "_ch[0-9]+_" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst
 
 ##### FOR NEW FASTQ HEADER #####
-# grep -Eio "ch=[0-9]+" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst ## OK
+# grep -Eio "ch=[0-9]+" $all_reads | awk '!seen[$0]++' > $output_folder/06_poisson_calculation/channels_used.lst
 
 # 06.01 - count unique channels (n/512)
 grep -c "ch" $output_folder/06_poisson_calculation/channels_used.lst > $output_folder/06_poisson_calculation/channels_in_use.txt
+echo Channels in use:
+cat $output_folder/06_poisson_calculation/channels_in_use.txt
 
 # 06.02 python - calculate lambda for poisson calculation
+echo Calculating lambda value and x_crit...
 python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/lambda_value.txt
 
 # 06.02.1 python - calculate x_critical
 python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
+cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
+
+echo Deleting $all_reads & $reference_genome temporary docker files
+rm -r $output_folder/fastq_tmp
+rm -r $output_folder/reference_tmp
 
 # End of file
