@@ -7,7 +7,7 @@ lambda_value = lambda_value_txt.read().splitlines()[8]
 print 'Lambda Value:'
 print lambda_value
 
-p = float(sys.argv[2]) # User Defined
+p = float(sys.argv[2])
 print 'P Value:'
 print p 
 
