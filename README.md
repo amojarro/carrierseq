@@ -131,6 +131,8 @@ Example fastq header:
 ```
 {read_id} runid={run_id} read={read_number} ch={channel_id} start_time={start_time_utc}
 ```
-We are working to make fastq files generated using stand alone packages (e.g., poretools) compatible. 
-
+or 
+```
+@006b70e0-2dd9-4f1a-a18a-521b3d4668d7 runid=ebfdf272ef6e469d83f5d045e4351889384fef6f read=179 ch=106 start_time=2017-05-07T04:28:48Z
+```
 
