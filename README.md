@@ -52,7 +52,7 @@ or with Docker...
 
 ```./carrierseq_docker.sh -i <input.fastq> -r <reference.fasta> -q <q_score> -p <p_value> -o <output_directory> -t <bwa_threads>```
 
--i -r and -o are mandatory flags, CarrierSeq will use the default values if -q -p -t are not defined:
+-i -r and -o are mandatory flags, CarrierSeq will use the default values if -q -p or -t are not defined:
 
 ```
 bwa_threads = 1 
@@ -123,3 +123,13 @@ CarrierSeq will generate the following folders and files within your working dir
                /carrierseq_out.fastq
                /carrierseq_out.txt
 ```
+## Known Issues
+
+CarrierSeq is currently only compatible with fastq files generated using the new header implemented after Albacore 1.2 or the latest MinKNOW live basecalling option. 
+
+Example:
+```
+{read_id} runid={run_id} read={read_number} ch={channel_id} start_time={start_time_utc}
+```
+
+
