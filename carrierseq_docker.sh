@@ -28,6 +28,12 @@ q_score="9"
 p_value="0.0001"
 output_folder=""
 
+# Getops error checking -i, -r, and -o are required
+if ( ! getopts "i:r:o:" opt); then
+	echo "Usage: `basename $0` options [-i INPUT] [-r REFERENCE] [-o OUTPUT] are required. Use -h for help";
+	exit $E_OPTERROR;
+fi
+
 OPTIND=1   
 
 while getopts "h?i:r:t:q:p:o:v:" opt; do
