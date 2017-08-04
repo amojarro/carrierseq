@@ -8,14 +8,14 @@
 show_help() {
 cat << EOF
 Usage: ${0##*/} [-i INPUT] [-r REFERENCE] [-o OUTPUT]...
-CarrierSeq requires bwa, samtools, seqtk, and fqtrim. 
+CarrierSeq requires bwa, samtools, seqtk, fqtrim, and biopython.
 Reads to be analyzed must be compiled into a single fastq file and the reference genome must be in fasta format.
      -i          All reads to be analyzed *.fastq
      -r          Carrier reference genome *.fasta
      -t          Number of threads used for BWA mapping (default = 1)
      -q          User-defined quality (phred) score (default = 9)
      -p          User-defined p-value 
-                 (default = 0.0001 or 0.05/512 active channels)
+                 (default = ~0.0001 or 0.05 / 512 active channels)
      -o          Output directory
 EOF
 }
@@ -28,9 +28,15 @@ q_score="9"
 p_value="0.0001"
 output_folder=""
 
+# Getops error checking -i, -r, and -o are required
+if ( ! getopts "i:r:o:" opt); then
+	echo "Usage: `basename $0` options [-i INPUT] [-r REFERENCE] [-o OUTPUT] are required. Use -h for help";
+	exit $E_OPTERROR;
+fi
+
 OPTIND=1   
 
-while getopts "h?i:r:t:q:p:o:v:" opt; do
+while getopts "h?i:r:t:q:p:o:" opt; do
     case "$opt" in
     h)
         show_help
@@ -38,8 +44,14 @@ while getopts "h?i:r:t:q:p:o:v:" opt; do
         ;;
     i)  all_reads=$OPTARG
         ;;
+    \?)
+        exit 1
+        ;;    
     r)  reference_genome=$OPTARG
         ;;
+    \?)
+        exit 1
+        ;;    
     t)  bwa_threads=$OPTARG
         ;;
     q)  q_score=$OPTARG
@@ -47,7 +59,10 @@ while getopts "h?i:r:t:q:p:o:v:" opt; do
     p)  p_value=$OPTARG
         ;;
     o)  output_folder=$OPTARG
-        ;;       
+        ;;
+    \?)
+        exit 1
+        ;;           
     esac
 done
 
@@ -163,6 +178,12 @@ echo Done!
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
 
+##################
+#                #
+#  Poisson Calc  #
+#                #
+##################
+
 echo Starting Poisson Calculation...
 
 ChannelsInUse="$output_folder/06_poisson_calculation/channels_in_use.txt"
@@ -198,5 +219,8 @@ cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 ##### FOR NEW FASTQ HEADER #####
 # 06.03 grep - get channel list from carrierseq_roi.fasta (old fastq header lists the channel twice in the same line)
 # grep -Eio "ch=[0-9]+" $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' > $output_folder/06_poisson_calculation/roi_clean_channels.lst # Get Channel List
+
+# Calculate Frequency and create channel dictionary
+python python/frequency_calc.py $ROIChannels > $output_folder/06_poisson_calculation/channel_dictionary.txt
 
 # End of file!
