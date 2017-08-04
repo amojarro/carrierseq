@@ -180,6 +180,13 @@ echo Done!
 
 # 05.1 grep - count target reads from fasta file
 grep -c ">" $output_folder/05_reads_of_interest/carrierseq_roi.fasta > $output_folder/05_reads_of_interest/carrierseq_roi.txt
+
+##################
+#                #
+#  Poisson Calc  #
+#                #
+##################
+
 echo Starting Poisson Calculation...
 
 ChannelsInUse="$output_folder/06_poisson_calculation/channels_in_use.txt"
@@ -207,11 +214,11 @@ python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_
 python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
 cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
-### Poisson Sort goes here #####
-
-#         right here           #
-
-################################
+######################
+#                    #
+#  END Poisson Calc  #
+#                    #
+######################
 
 # Cleaning up
 echo Deleting temporary reads and reference genome docker files...
