@@ -21,6 +21,8 @@ CarrierSeq implements bwa-mem (Li, 2013) to first map all reads to the genomic c
 
 The CarrierSeq scripts requires the following packages to be installed on your local machine.
 
+Biopython - http://biopython.org/
+SciPy - https://www.scipy.org/
 bwa - https://github.com/lh3/bwa</br>
 seqtk - https://github.com/lh3/seqtk</br>
 samtools - https://github.com/samtools/samtools</br>
