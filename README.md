@@ -36,7 +36,11 @@ Alternatively, use Docker and the Docker script.
 1. Start docker
 2. run ```docker pull mojarro/carrierseq:latest```
 
-That's it, no installing dependencies!
+The python libraries must still be installed locally.
+
+1. ```sudo easy_install pip```
+2. ```pip install scipy```
+3. ```pip install biopython```
 
 ## Using CarrierSeq 
 
