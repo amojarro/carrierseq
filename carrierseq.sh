@@ -208,14 +208,10 @@ python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_
 python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
 cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
-##### FOR OLD FASTQ HEADER #####
-# 06.03 grep - get channel list from carrierseq_roi.fasta (old fastq header lists the channel twice in the same line)
-# grep -Eio "_ch[0-9]+_" $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' > $output_folder/06_poisson_calculation/roi_channels.lst # Get Channel List
-# sed 's/ch//g' $output_folder/06_poisson_calculation/roi_channels.lst > $output_folder/06_poisson_calculation/roi_channels_clean.lst # Remove any Characters
-
-##### FOR NEW FASTQ HEADER #####
-# 06.03 grep - get channel list from carrierseq_roi.fasta (old fastq header lists the channel twice in the same line)
-# grep -Eio "ch=[0-9]+" $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' > $output_folder/06_poisson_calculation/roi_clean_channels.lst # Get Channel List
+# 06.03 grep - get channel list from carrierseq_roi.fasta (now compatible with poretools and albacore fastqs)
+grep -Eo '_ch[0-9]+_' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/poretools_roi_channels.lst # Get Channel List from poretools output
+awk 'NR % 2 == 0' $output_folder/06_poisson_calculation/poretools_roi_channels.lst | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/roi_channels_clean.lst # Remove duplicate channels from poretools fastq
+grep -Eo 'ch=[0-9]+' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' >> $output_folder/06_poisson_calculation/roi_channels_clean.lst # Get channel list from albacore fastq
 
 # Calculate Frequency and create channel dictionary
 python python/frequency_calc.py $ROIChannels > $output_folder/06_poisson_calculation/channel_dictionary.txt
