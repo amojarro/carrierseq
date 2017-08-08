@@ -86,8 +86,6 @@ mkdir -p $output_folder/06_poisson_calculation # calculations for sorting "real"
 mkdir -p $output_folder/07_hqnrs # "high-quality noise reads"
 mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if target is unknown
 
-#: <<'END'
-
 ##################
 #                #
 #    Mapping     #
@@ -103,8 +101,6 @@ $Cmd $reference_genome
 echo Mapping all reads to reference genome...
 Cmd="bwa mem -x ont2d -t $bwa_threads"
 $Cmd $reference_genome $all_reads > $output_folder/00_bwa/bwa_mapped.sam
-
-#END
 
 # 01 samtools - extract unmapped reads as sam file
 echo Extracting unmapped reads...
