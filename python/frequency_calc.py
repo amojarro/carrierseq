@@ -58,4 +58,3 @@ with open(sys.argv[6], 'w') as f:
     sys.stdout = f
     for item in target_channels.keys():
     	print item
-    
