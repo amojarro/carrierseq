@@ -12,6 +12,9 @@ RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-de
 # Install biopython
 RUN pip install biopython
 
+# Install scipy
+RUN pip install scipy
+
 # Install bwa
 RUN git clone https://github.com/lh3/bwa.git /tmp/bwa
 RUN cd /tmp/bwa \
