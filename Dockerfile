@@ -12,6 +12,9 @@ RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-de
 # Install biopython
 RUN pip install biopython
 
+# Install biopython
+RUN pip install numpy
+
 # Install scipy
 RUN pip install scipy
 
