@@ -119,10 +119,11 @@ CarrierSeq will generate the following folders and files within your working dir
                      /06_xcrit_threshold_for_dictionary_search.txt # x_crit value.
                      /07_poretools_roi_channels.lst # Channels used in reads of interest from fastq generated using poretools.
                      /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using
-                                                # albacore or minknow or formated channels from 07_poretools_roi_channels.lst.
+                                                # albacore or minknow or formatted channels from    
+                                                # 07_poretools_roi_channels.lst.
                      /09_target_channels.lst # "Good" channels used to sort target reads.
-                     /10_albacore_target_channels.lst # "Good" channels list formated for poretools fastq files.
-                     /10_poretools_target_channels.lst # "Good" channel list formated for albacore/minknow files.
+                     /10_albacore_target_channels.lst # "Good" channels list formatted for poretools fastq files.
+                     /10_poretools_target_channels.lst # "Good" channel list formatted for albacore/minknow files.
                      /xx_hqnr_channel_dictionary.txt # Raw HQNRs read/channel frequency dictionary for python.
                      /xx_roi_channel_dictionary.txt # Raw reads of interest read/channel frequency dictionary for python.
                      /xx_target_channel_dictionary.txt # Raw target reads read/channel frequency dictionary for python.
