@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# : <<'END' 
+# END
+
 # carrierseq.sh
 # Angel Mojarro <mojarro at mit dot edu>
 # angelmojarro.com
@@ -106,8 +109,6 @@ CarrierSeq="mojarro/carrierseq:latest"
 DockerPath="/carrierseq"
 PythonPath="/pwd"
 DockerOptions="-v $output_folder:$DockerPath -v $(pwd):$PythonPath $CarrierSeq" 
-
-: <<'END'
 
 # Copy reads and reference genome into temporary folders for Docker
 echo Copying reads and reference genome into temporary docker file...
@@ -244,8 +245,6 @@ grep -c "ch" $output_folder/06_poisson_calculation/02_channels_used.lst > $outpu
 echo 'Channels in use:'
 cat $output_folder/06_poisson_calculation/03_channels_in_use.txt
 
-END
-
 # 06.02 python - calculate lambda for poisson calculation
 echo Calculating lambda and x_crit values...
 docker run $DockerOptions python $PythonPath/python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/04_lambda_value.txt
@@ -263,7 +262,7 @@ grep -Eo 'ch=[0-9]+' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | 
 
 # 06.03 python - Calculate Frequency and create channel dictionary
 echo Creating channel frequency dictionaries...
-docker run $DockerOptions python $PythonPath/python/frequency_calc.py $ROIChannels $XCrit $output_folder/06_poisson_calculation/xx_roi_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_hqnr_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_target_channel_dictionary.txt $output_folder/06_poisson_calculation/09_target_channels.lst
+docker run $DockerOptions python $PythonPath/python/frequency_calc.py $ROIChannels $XCrit $DockerPath/06_poisson_calculation/xx_roi_channel_dictionary.txt $DockerPath/06_poisson_calculation/xx_hqnr_channel_dictionary.txt $DockerPath/06_poisson_calculation/xx_target_channel_dictionary.txt $DockerPath/06_poisson_calculation/09_target_channels.lst
 echo Poisson caculation complete! Files saved to 06_poisson_calculation.
 
 ##################
@@ -281,8 +280,8 @@ ROIids="$output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.lst" # reads of
 sed 's/^/ch=/' $PSorter > $output_folder/06_poisson_calculation/10_albacore_target_channels.lst
 sed 's/^/_ch/' $PSorter | sed 's/$/_/' > $output_folder/06_poisson_calculation/10_poretools_target_channels.lst
 
-Poretools="$DockerPath/06_poisson_calculation/10_poretools_target_channels.lst"
-Albacore="$DockerPath/06_poisson_calculation/10_albacore_target_channels.lst"
+Poretools="$output_folder/06_poisson_calculation/10_poretools_target_channels.lst"
+Albacore="$output_folder/06_poisson_calculation/10_albacore_target_channels.lst"
 
 # Dump reads of interest header read id, channel, etc
 grep -e '>' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/>//g' > $output_folder/05_reads_of_interest/carrierseq_roi_header.lst # dump all rois with channels
@@ -300,10 +299,10 @@ grep -Fxvf $output_folder/08_target_reads/carrierseq_target_reads.lst $ROIids > 
 
 # 07.02 seqtk - extract target reads and make fasta file
 echo 'Extracting target reads from carrierseq_roi.fastq ...'
-Cmd="DockerOptions seqtk subseq"
+Cmd="$DockerOptions seqtk subseq"
 docker run $Cmd $DockerPath/05_reads_of_interest/carrierseq_roi.fastq $DockerPath/08_target_reads/carrierseq_target_reads.lst > $output_folder/08_target_reads/carrierseq_target_reads.fastq # use seqtk to extract target reads
 
-Cmd="DockerOptions seqtk seq -a"
+Cmd="$DockerOptions seqtk seq -a"
 docker run $Cmd $DockerPath/08_target_reads/carrierseq_target_reads.fastq > $output_folder/08_target_reads/carrierseq_target_reads.fasta # make target reads fasta
 echo 'Target reads saved to 08_target_reads!'
 echo Target target reads: 
@@ -314,10 +313,10 @@ cat $output_folder/08_target_reads/carrierseq_target_reads.txt
 
 # 07.03 seqtk - extract hqnr reads and make fasta file
 echo 'Extracting HQNRs from carrierseq_roi.fastq ...'
-Cmd="DockerOptions seqtk subseq"
-docker run $DockerPath/05_reads_of_interest/carrierseq_roi.fastq $DockerPath/07_hqnrs/carrierseq_hqnrs.lst > $output_folder/07_hqnrs/carrierseq_hqnrs.fastq # use seqtk to extract target reads
+Cmd="$DockerOptions seqtk subseq"
+docker run $Cmd $DockerPath/05_reads_of_interest/carrierseq_roi.fastq $DockerPath/07_hqnrs/carrierseq_hqnrs.lst > $output_folder/07_hqnrs/carrierseq_hqnrs.fastq # use seqtk to extract target reads
 
-Cmd="DockerOptions seqtk seq -a"
+Cmd="$DockerOptions seqtk seq -a"
 docker run $Cmd $DockerPath/07_hqnrs/carrierseq_hqnrs.fastq > $output_folder/07_hqnrs/carrierseq_hqnrs.fasta # make hqnrs reads fasta
 echo 'HQNRs saved to 07_hqnrs!'
 echo Total HQNRs: 
@@ -332,7 +331,5 @@ rm -r $output_folder/fastq_tmp
 rm -r $output_folder/reference_tmp
 
 echo 'Thank you for using CarrierSeq!'
-
-END
 
 # End of file!
