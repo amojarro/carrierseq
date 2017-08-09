@@ -13,7 +13,7 @@ Reads to be analyzed must be compiled into a single fastq file and the reference
      -i          All reads to be analyzed *.fastq
      -r          Carrier reference genome *.fasta
      -t          Number of threads used for BWA mapping (default = 1)
-     -q          User-defined quality (phred) score (default = 8)
+     -q          User-defined quality (phred) score (default = 9)
      -p          User-defined p-value 
                  (default = ~0.0001 or 0.05 / 512 active channels)
      -o          Output directory
@@ -24,7 +24,7 @@ EOF
 all_reads=""
 reference_genome=""
 bwa_threads="1"
-q_score="8"
+q_score="9"
 p_value="0.0001"
 output_folder=""
 
