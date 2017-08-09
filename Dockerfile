@@ -7,10 +7,10 @@ FROM ubuntu:14.04
 RUN apt-get update
 
 # Install Dependencies
-RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk
+RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk python-numpy python-scipy
 
-# Install Python Dependencies
-RUN pip install biopython numpy scipy matplotlib ipython jupyter pandas sympy nose
+# Install biopython
+RUN pip install biopython
 
 # Install bwa
 RUN git clone https://github.com/lh3/bwa.git /tmp/bwa
