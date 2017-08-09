@@ -9,14 +9,8 @@ RUN apt-get update
 # Install Dependencies
 RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk
 
-# Install biopython
-RUN pip install biopython
-
-# Install biopython
-RUN pip install numpy
-
-# Install scipy
-RUN pip install scipy
+# Install Python Dependencies
+RUN pip install biopython numpy scipy matplotlib ipython jupyter pandas sympy nose
 
 # Install bwa
 RUN git clone https://github.com/lh3/bwa.git /tmp/bwa
