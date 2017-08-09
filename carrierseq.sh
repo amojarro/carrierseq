@@ -232,7 +232,7 @@ sed -n 6p $output_folder/06_poisson_calculation/read_channel_threshold.txt > $ou
 cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
 
 # 06.03 grep - get channel list from carrierseq_roi.fasta (now compatible with poretools and albacore fastqs)
-echo 'Extracting read ID and channels from reads of interest....'
+echo 'Extracting read IDs and channels from reads of interest....'
 grep -Eo '_ch[0-9]+_' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/poretools_roi_channels.lst # Get Channel List from poretools output
 awk 'NR % 2 == 0' $output_folder/06_poisson_calculation/poretools_roi_channels.lst | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/roi_channels_clean.lst # Remove duplicate channels from poretools fastq
 grep -Eo 'ch=[0-9]+' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' >> $output_folder/06_poisson_calculation/roi_channels_clean.lst # Get channel list from albacore fastq
@@ -289,7 +289,7 @@ cat $output_folder/08_target_reads/carrierseq_target_reads.txt
 echo 'Extracting HQNRs from carrierseq_roi.fastq ...'
 seqtk subseq $output_folder/05_reads_of_interest/carrierseq_roi.fastq $output_folder/07_hqnrs/hqnrs.lst > $output_folder/07_hqnrs/carrierseq_hqnrs.fastq # use seqtk to extract target reads
 seqtk seq -a $output_folder/07_hqnrs/carrierseq_hqnrs.fastq > $output_folder/07_hqnrs/carrierseq_hqnrs.fasta # make hqnrs reads fasta
-echo 'HQNRs saved to 08_hqnrs!'
+echo 'HQNRs saved to 07_hqnrs!'
 echo Total HQNRs: 
 
 # 07.03.1 grep - count hqnr reads
