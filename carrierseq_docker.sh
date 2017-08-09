@@ -218,40 +218,40 @@ cat $output_folder/05_reads_of_interest/carrierseq_roi.txt
 
 echo Starting Poisson calculation...
 
-ChannelsInUse="$output_folder/06_poisson_calculation/channels_in_use.txt"
+ChannelsInUse="$output_folder/06_poisson_calculation/03_channels_in_use.txt"
 TotalROIs="$output_folder/05_reads_of_interest/carrierseq_roi.txt"
-LambdaValue="$output_folder/06_poisson_calculation/lambda_value.txt"
-ROIChannels="$output_folder/06_poisson_calculation/roi_channels_clean.lst"
-XCrit="$output_folder/06_poisson_calculation/threshold_for_dictionary_search.txt"
+LambdaValue="$output_folder/06_poisson_calculation/04_lambda_value.txt"
+ROIChannels="$output_folder/06_poisson_calculation/08_roi_channels_clean.lst"
+XCrit="$output_folder/06_poisson_calculation/06_xcrit_threshold_for_dictionary_search.txt"
 
 # 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
 echo 'Counting total channels in use...'
-grep -Eo '_ch[0-9]+_|ch=[0-9]+' $all_reads > $output_folder/06_poisson_calculation/reads_channels.lst
-awk '!seen[$0]++' $output_folder/06_poisson_calculation/reads_channels.lst > $output_folder/06_poisson_calculation/channels_used.lst
+grep -Eo '_ch[0-9]+_|ch=[0-9]+' $all_reads > $output_folder/06_poisson_calculation/01_reads_channels.lst
+awk '!seen[$0]++' $output_folder/06_poisson_calculation/01_reads_channels.lst > $output_folder/06_poisson_calculation/02_channels_used.lst
 
 # 06.01 - count unique channels (n/512)
-grep -c "ch" $output_folder/06_poisson_calculation/channels_used.lst > $output_folder/06_poisson_calculation/channels_in_use.txt
+grep -c "ch" $output_folder/06_poisson_calculation/02_channels_used.lst > $output_folder/06_poisson_calculation/03_channels_in_use.txt
 echo 'Channels in use:'
-cat $output_folder/06_poisson_calculation/channels_in_use.txt
+cat $output_folder/06_poisson_calculation/03_channels_in_use.txt
 
 # 06.02 python - calculate lambda for poisson calculation
 echo Calculating lambda and x_crit values...
-python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/lambda_value.txt
+python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/04_lambda_value.txt
 
 # 06.02.1 python - calculate x_critical
-python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/read_channel_threshold.txt
-sed -n 6p $output_folder/06_poisson_calculation/read_channel_threshold.txt > $output_folder/06_poisson_calculation/threshold_for_dictionary_search.txt
-cat $output_folder/06_poisson_calculation/read_channel_threshold.txt
+python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/05_read_channel_threshold.txt
+sed -n 6p $output_folder/06_poisson_calculation/05_read_channel_threshold.txt > $output_folder/06_poisson_calculation/06_xcrit_threshold_for_dictionary_search.txt
+cat $output_folder/06_poisson_calculation/05_read_channel_threshold.txt
 
 # 06.03 grep - get channel list from carrierseq_roi.fasta (now compatible with poretools and albacore fastqs)
 echo 'Extracting read IDs and channels from reads of interest....'
-grep -Eo '_ch[0-9]+_' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/poretools_roi_channels.lst # Get Channel List from poretools output
-awk 'NR % 2 == 0' $output_folder/06_poisson_calculation/poretools_roi_channels.lst | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/roi_channels_clean.lst # Remove duplicate channels from poretools fastq
-grep -Eo 'ch=[0-9]+' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' >> $output_folder/06_poisson_calculation/roi_channels_clean.lst # Get channel list from albacore fastq
+grep -Eo '_ch[0-9]+_' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/07_poretools_roi_channels.lst # Get Channel List from poretools output
+awk 'NR % 2 == 0' $output_folder/06_poisson_calculation/07_poretools_roi_channels.lst | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/08_roi_channels_clean.lst # Remove duplicate channels from poretools fastq
+grep -Eo 'ch=[0-9]+' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' >> $output_folder/06_poisson_calculation/08_roi_channels_clean.lst # Get channel list from albacore fastq
 
 # 06.03 pyton - Calculate Frequency and create channel dictionary
 echo Creating channel frequency dictionaries...
-python python/frequency_calc.py $ROIChannels $XCrit $output_folder/06_poisson_calculation/roi_channel_dictionary.txt $output_folder/06_poisson_calculation/hqnr_channel_dictionary.txt $output_folder/06_poisson_calculation/target_channel_dictionary.txt $output_folder/06_poisson_calculation/target_channels.lst
+python python/frequency_calc.py $ROIChannels $XCrit $output_folder/06_poisson_calculation/xx_roi_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_hqnr_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_target_channel_dictionary.txt $output_folder/06_poisson_calculation/09_target_channels.lst
 echo Poisson caculation complete! Files saved to 06_poisson_calculation.
 
 ##################
@@ -262,15 +262,15 @@ echo Poisson caculation complete! Files saved to 06_poisson_calculation.
 
 echo 'Preparing files to begin Poisson sorting...'
 
-PSorter="$output_folder/06_poisson_calculation/target_channels.lst" # target reads "good" channel to grep -f with
+PSorter="$output_folder/06_poisson_calculation/09_target_channels.lst" # target reads "good" channel to grep -f with
 ROIids="$output_folder/04_fqtrim_dusted/unmapped_reads_qc_dusted.lst" # reads of interest read id only
 
 # Make grep search compatible for albacore and poretools header format
-sed 's/^/ch=/' $PSorter > $output_folder/06_poisson_calculation/albacore_target_channels.lst
-sed 's/^/_ch/' $PSorter | sed 's/$/_/' > $output_folder/06_poisson_calculation/poretools_target_channels.lst
+sed 's/^/ch=/' $PSorter > $output_folder/06_poisson_calculation/10_albacore_target_channels.lst
+sed 's/^/_ch/' $PSorter | sed 's/$/_/' > $output_folder/06_poisson_calculation/10_poretools_target_channels.lst
 
-Poretools="$output_folder/06_poisson_calculation/poretools_target_channels.lst"
-Albacore="$output_folder/06_poisson_calculation/albacore_target_channels.lst"
+Poretools="$output_folder/06_poisson_calculation/10_poretools_target_channels.lst"
+Albacore="$output_folder/06_poisson_calculation/10_albacore_target_channels.lst"
 
 # Dump reads of interest header read id, channel, etc
 grep -e '>' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | sed 's/>//g' > $output_folder/05_reads_of_interest/carrierseq_roi_header.lst # dump all rois with channels
@@ -279,16 +279,16 @@ ROIHeader="$output_folder/05_reads_of_interest/carrierseq_roi_header.lst"
 
 echo Identifying target reads...
 # 07 grep - identify target read ids from channel grep poretools and albacore format
-grep -f $Poretools $ROIHeader | awk '{print $1}' > $output_folder/08_target_reads/target_reads.lst
-grep -f $Albacore $ROIHeader | awk '{print $1}' >> $output_folder/08_target_reads/target_reads.lst
+grep -f $Poretools $ROIHeader | awk '{print $1}' > $output_folder/08_target_reads/carrierseq_target_reads.lst
+grep -f $Albacore $ROIHeader | awk '{print $1}' >> $output_folder/08_target_reads/carrierseq_target_reads.lst
 
 echo Identifying HQNRs...
 # 07.01 grep use grep diff to get hqnr channels
-grep -Fxvf $output_folder/08_target_reads/target_reads.lst $ROIids > $output_folder/07_hqnrs/hqnrs.lst
+grep -Fxvf $output_folder/08_target_reads/carrierseq_target_reads.lst $ROIids > $output_folder/07_hqnrs/carrierseq_hqnrs.lst
 
 # 07.02 seqtk - extract target reads and make fasta file
 echo 'Extracting target reads from carrierseq_roi.fastq ...'
-seqtk subseq $output_folder/05_reads_of_interest/carrierseq_roi.fastq $output_folder/08_target_reads/target_reads.lst > $output_folder/08_target_reads/carrierseq_target_reads.fastq # use seqtk to extract target reads
+seqtk subseq $output_folder/05_reads_of_interest/carrierseq_roi.fastq $output_folder/08_target_reads/carrierseq_target_reads.lst > $output_folder/08_target_reads/carrierseq_target_reads.fastq # use seqtk to extract target reads
 seqtk seq -a $output_folder/08_target_reads/carrierseq_target_reads.fastq > $output_folder/08_target_reads/carrierseq_target_reads.fasta # make target reads fasta
 echo 'Target reads saved to 08_target_reads!'
 echo Target target reads: 
@@ -299,7 +299,7 @@ cat $output_folder/08_target_reads/carrierseq_target_reads.txt
 
 # 07.03 seqtk - extract hqnr reads and make fasta file
 echo 'Extracting HQNRs from carrierseq_roi.fastq ...'
-seqtk subseq $output_folder/05_reads_of_interest/carrierseq_roi.fastq $output_folder/07_hqnrs/hqnrs.lst > $output_folder/07_hqnrs/carrierseq_hqnrs.fastq # use seqtk to extract target reads
+seqtk subseq $output_folder/05_reads_of_interest/carrierseq_roi.fastq $output_folder/07_hqnrs/carrierseq_hqnrs.lst > $output_folder/07_hqnrs/carrierseq_hqnrs.fastq # use seqtk to extract target reads
 seqtk seq -a $output_folder/07_hqnrs/carrierseq_hqnrs.fastq > $output_folder/07_hqnrs/carrierseq_hqnrs.fasta # make hqnrs reads fasta
 echo 'HQNRs saved to 07_hqnrs!'
 echo Total HQNRs: 
