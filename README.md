@@ -84,19 +84,19 @@ CarrierSeq will generate the following folders and files within your working dir
          /unmapped_reads_qc.lst 
          /unmapped_reads_qc.txt 
 
-# Discarded reads below the given q-score threshold
+# Discarded reads below the given q-score threshold.
 03_01_low_quality_reads/low_quality_unmapped_reads.fasta 
                        /low_quality_unmapped_reads.fastq 
                        /low_quality_unmapped_reads.lst   
                        /low_quality_unmapped_reads.txt   
                        
-# Reads with less than 50% of its length detected as low complexity
+# Reads with less than 50% of its length detected as low complexity.
 04_fqtrim_dusted/unmapped_reads_qc_dusted.fasta 
                 /unmapped_reads_qc_dusted.fastq
                 /unmapped_reads_qc_dusted.lst 
                 /unmapped_reads_qc_dusted.txt
                 
-# Discarded reads with over than 50% of its length detected as low complexity               
+# Discarded reads with over than 50% of its length detected as low complexity.               
 04_01_low_complexity_reads/low_complexity_reads_qc.fasta 
                           /low_complexity_reads_qc.fastq 
                           /low_complexity_reads_qc.lst   
@@ -110,12 +110,12 @@ CarrierSeq will generate the following folders and files within your working dir
                     /carrierseq_roi.txt
 
 # By treating reads as a Poisson arrival process, CarrierSeq models the expected reads-of-interest 
-# channel distribution and rejects data from channels exceeding a reads/channels threshold (xcrit)
+# channel distribution and rejects data from channels exceeding a reads/channels threshold (xcrit).
 06_poisson_caculation/01_reads_channels.lst # all channels used during sequencing.
                      /02_channels_used.lst # Unique channels used during sequencing.
                      /03_channels_in_use.txt # Number of unique channels.
                      /04_lambda_value.txt # Lambda = Unkown Reads / Used Channels.
-                     /05_read_channel_threshold.txt # Critical read/channel (x_crit) threshold calculation summary .
+                     /05_read_channel_threshold.txt # Critical read/channel (x_crit) threshold calculation summary.
                      /06_xcrit_threshold_for_dictionary_search.txt # x_crit value.
                      /07_poretools_roi_channels.lst # Channels used in reads of interest from fastq generated using poretools.
                      /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using
@@ -128,13 +128,13 @@ CarrierSeq will generate the following folders and files within your working dir
                      /xx_roi_channel_dictionary.txt # Raw reads of interest read/channel frequency dictionary for python.
                      /xx_target_channel_dictionary.txt # Raw target reads read/channel frequency dictionary for python.
                      
-# Likely HQNRs (reads/channel > xcrit) 
+# Likely HQNRs (reads/channel > xcrit). 
 07_hqnrs/carrierseq_hqnrs.fasta
         /carrierseq_hqnrs.fastq
         /carrierseq_hqnrs.lst
         /carrierseq_hqnrs.txt
         
-# Likely Target Reads (reads/channel ≤ xcrit)
+# Likely Target Reads (reads/channel ≤ xcrit).
 08_target_reads/carrierseq_target_reads.fasta
                /carrierseq_target_readst.fastq
                /carrierseq_target_reads.lst
