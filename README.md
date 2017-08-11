@@ -140,3 +140,7 @@ CarrierSeq will generate the following folders and files within your working dir
                /carrierseq_target_reads.lst
                /carrierseq_target_reads.txt
 ```
+
+## CarrierSeq Example
+
+...
