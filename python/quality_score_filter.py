@@ -1,3 +1,6 @@
+# Primary author : Michael Micorescu (Michael.Micorescu(at)nanoporetech.com)
+# Modified by AM for CarrierSeq application
+
 from Bio import SeqIO
 import math
 from Tkinter import Tk
