@@ -15,7 +15,7 @@ Long-read nanopore sequencing technology is of particular significance for taxon
 Here we address this problem by employing carrier sequencing, a method to sequence low-input DNA by preparing the target DNA with a genomic carrier to achieve ideal library preparation and sequencing stoichiometry without amplification. We then use CarrierSeq, a sequence analysis workflow to identify the low-input target reads from the genomic carrier
 
 ### Methods
-CarrierSeq implements ```bwa-mem``` (Li, 2013) to first map all reads to the genomic carrier then extracts unmapped reads by using ```samtools``` (Li et al., 2009) and ```seqtk``` (Li, 2012). Thereafter, the user can define a quality score threshold and CarrierSeq proceeds to discard low-complexity reads with ```fqtrim``` (Pertea, 2015). This set of unmapped and filtered reads are labeled “reads of interest” and should theoretically comprise target reads and likely contamination. However, reads of interest may also include “high-quality noise reads” (HQNRs), defined as reads that satisfy quality score and complexity filters yet do not match to any database and disproportionately originate from specific channels. By treating reads as a Poisson arrival process, CarrierSeq models the expected reads of interest channel distribution and rejects data from channels exceeding a reads/channels threshold (xcrit). Reads of interest are then sorted in ```08_target_reads``` (reads/channel ≤ xcrit) or ```07_hqnrs``` (reads/channel > xcrit).
+CarrierSeq implements ```bwa-mem``` (Li, 2013) to first map all reads to the genomic carrier then extracts unmapped reads by using ```samtools``` (Li et al., 2009) and ```seqtk``` (Li, 2012). Thereafter, the user can define a quality score threshold and CarrierSeq proceeds to discard low-complexity reads with ```fqtrim``` (Pertea, 2015). This set of unmapped and filtered reads are labeled “reads of interest” and should theoretically comprise target reads and likely contamination. However, reads of interest may also include “high-quality noise reads” (HQNRs), defined as reads that satisfy quality score and complexity filters yet do not match to any database and disproportionately originate from specific channels. By treating reads as a Poisson arrival process, CarrierSeq models the expected reads of interest channel distribution and rejects data from channels exceeding a reads/channels threshold (xcrit). Reads of interest are then sorted into ```08_target_reads``` (reads/channel ≤ xcrit) or ```07_hqnrs``` (reads/channel > xcrit).
 
 ## Requirements
 
@@ -40,7 +40,7 @@ That's it!
 
 ## Using CarrierSeq 
 
-Note: You may need to first make the script executable with:
+Note: You may first need to make the script executable with:
 
 ```chmod +x path/to/carrierseq.sh```
 or
@@ -167,12 +167,12 @@ Total Reads: 1,179 reads (including 17 false negative B. subtilis reads)
 Total Bases: 7,282,767 bases
 ###
 Target Reads [08_target_reads]
-Total Reads: 632 reads (including 474 true positive B. subtilis reads, 4 true positive contamination reads, and 54 false positive HQNRs)
+Total Reads: 632 reads (including 574 true positive B. subtilis reads, 4 true positive contamination reads, and 54 false positive HQNRs)
 Total Bases: 849,607 bases
 ```
 
 ### ROI Pore Occupancy
-The matrix illustrates the reads/channel distribution of B. subtilis, contamination, and HQNRs across all 512 nanopore channels. Assuming that sequencing is a stochastic process, CarrierSeq is able to identify channels producing spurious reads by calculating the expected Poisson distribution of reads/channel (xcrit = 7 reads/channel). Here we are able to visually identify overly productive channels (e.g., 191 reads/channel, etc) producing likely HQNRs.
+The matrix illustrates the reads/channel distribution of B. subtilis, contamination, and HQNRs across all 512 nanopore channels. Here we are able to visually identify overly productive channels (e.g., 191 reads/channel, etc) producing likely HQNRs.
 ![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_roi_q9_p005.png)
 
 ### HQNR Pore Occupancy
@@ -180,6 +180,6 @@ The matrix illustrates the reads/channel distribution of B. subtilis, contaminat
 ![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_hqnrs_q9_p005.png)
 
 ### Target Reads Pore Occupancy
-“Good” channels identified by CarrierSeq as non-HQNR-associated (reads/channel ≤ 7). Channels producing 6 or more reads yield HQNRs that have satisfied our CarrierSeq parameters, by imposing a stricted p-value CarrierSeq may be able to reject more HQNRs (e.g., xcrit = 5).
+“Good” channels identified by CarrierSeq as non-HQNR-associated (reads/channel ≤ 7). Channels producing 6 or more reads yield HQNRs that have satisfied our CarrierSeq parameters. By imposing a stricted p-value, CarrierSeq may be able to reject more HQNRs (e.g., xcrit = 5).
 ![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_target_reads_q9_p005.png)
 
