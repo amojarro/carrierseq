@@ -147,3 +147,9 @@ Supplementary sequencing data available from https://www.ncbi.nlm.nih.gov/biosam
 ### Library preparation and sequencing
 0.2 ng of B. subtilis DNA was prepared with 1 µg of Lambda DNA using the Oxford Nanopore Technologies (ONT) ligation sequencing kit (LSK-SQK108). The library was then sequenced on a MinION Mark-1B sequencer and R9.4 flowcell for 48 hours and basecalled using ONT’s Albacore (v1.10) offline basecaller.
 
+### CarrierSeq Parameters
+q-score = 9 (default) and p-value = 0.05. At Q9, the expected B. subtilis abundance is 590 reads.
+
+### ROI Pore Occupancy
+![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_roi_q9_p005.png)
+
