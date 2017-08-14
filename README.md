@@ -120,7 +120,7 @@ CarrierSeq will generate the following folders and files within your working dir
                      /05_read_channel_threshold.txt # Critical read/channel (xcrit) threshold calculation summary.
                      /06_xcrit_threshold_for_dictionary_search.txt # xcrit value.
                      /07_poretools_roi_channels.lst # Channels used in reads of interest from fastq generated using poretools.
-                     /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using albacore or minknow or formatted channels from07_poretools_roi_channels.lst.
+                     /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using albacore or minknow or formatted channels from 07_poretools_roi_channels.lst.
                      /09_target_channels.lst # "Good" channels used to sort target reads.
                      /10_albacore_target_channels.lst # "Good" channels list formatted for poretools fastq files.
                      /10_poretools_target_channels.lst # "Good" channel list formatted for albacore/minknow files.
@@ -142,5 +142,8 @@ CarrierSeq will generate the following folders and files within your working dir
 ```
 
 ## CarrierSeq Example
+Supplementary sequencing data available from https://www.ncbi.nlm.nih.gov/biosample/xxxx
 
-...
+### Library preparation and sequencing
+0.2 ng of B. subtilis DNA was prepared with 1 µg of Lambda DNA using the Oxford Nanopore Technologies (ONT) ligation sequencing kit (LSK-SQK108). The library was then sequenced on a MinION Mark-1B sequencer and R9.4 flowcell for 48 hours and basecalled using ONT’s Albacore (v1.10) offline basecaller.
+
