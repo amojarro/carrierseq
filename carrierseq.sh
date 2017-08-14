@@ -280,7 +280,7 @@ echo 'Extracting target reads from carrierseq_roi.fastq ...'
 seqtk subseq $output_folder/05_reads_of_interest/carrierseq_roi.fastq $output_folder/08_target_reads/carrierseq_target_reads.lst > $output_folder/08_target_reads/carrierseq_target_reads.fastq # use seqtk to extract target reads
 seqtk seq -a $output_folder/08_target_reads/carrierseq_target_reads.fastq > $output_folder/08_target_reads/carrierseq_target_reads.fasta # make target reads fasta
 echo 'Target reads saved to 08_target_reads!'
-echo Target target reads: 
+echo Total target reads: 
 
 # 07.02.1 grep - count target reads
 grep -c ">" $output_folder/08_target_reads/carrierseq_target_reads.fasta > $output_folder/08_target_reads/carrierseq_target_reads.txt # count target reads
