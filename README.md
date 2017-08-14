@@ -148,8 +148,26 @@ Supplementary sequencing data available from https://www.ncbi.nlm.nih.gov/biosam
 0.2 ng of B. subtilis DNA was prepared with 1 µg of Lambda DNA using the Oxford Nanopore Technologies (ONT) ligation sequencing kit (LSK-SQK108). The library was then sequenced on a MinION Mark-1B sequencer and R9.4 flowcell for 48 hours and basecalled using ONT’s Albacore (v1.10) offline basecaller.
 
 ### CarrierSeq Parameters
-q-score = 9 (default) and p-value = 0.05. At Q9, the expected B. subtilis abundance is 590 reads.
+q-score = 9 (default) and p-value = 0.05. 
+
+### Sequencing and CarrierSeq Summary
+At Q9, the expected B. subtilis abundance is 590 reads for this sequencing data. The xcrit value was calculated to be 7 reads/channel.
+
+```
+All Reads (Lambda + B. subtilis + Contamination + Noise)
+Total Reads: 547,478 reads
+Total Bases: 4,914,693,436 bases
+```
 
 ### ROI Pore Occupancy
+The matrix illustrates the reads/channel distribution of B. subtilis, contamination, and HQNRs across all 512 nanopore channels. Assuming that sequencing is a stochastic process, CarrierSeq is able to identify channels producing spurious reads by calculating the expected Poisson distribution of reads/channel (xcrit = 7 reads/channel).
 ![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_roi_q9_p005.png)
+
+### HQNR Pore Occupancy
+“Bad” channels identified by CarrierSeq as HQNR-associated (reads/channel > 7).
+![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_hqnrs_q9_p005.png)
+
+### Target Reads Pore Occupancy
+“Good” channels identified by CarrierSeq as non-HQNR-associated (reads/channel ≤ 7). Channels producing 6 or more reads yield HQNRs that have satisfied our CarrierSeq parameters, by imposing a stricted p-value CarrierSeq may be able to reject more HQNRs (e.g., xcrit = 5).
+![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_target_reads_q9_p005.png)
 
