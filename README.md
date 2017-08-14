@@ -172,7 +172,7 @@ Total Bases: 849,607 bases
 ```
 
 ### ROI Pore Occupancy
-The matrix illustrates the reads/channel distribution of B. subtilis, contamination, and HQNRs across all 512 nanopore channels. Assuming that sequencing is a stochastic process, CarrierSeq is able to identify channels producing spurious reads by calculating the expected Poisson distribution of reads/channel (xcrit = 7 reads/channel).
+The matrix illustrates the reads/channel distribution of B. subtilis, contamination, and HQNRs across all 512 nanopore channels. Assuming that sequencing is a stochastic process, CarrierSeq is able to identify channels producing spurious reads by calculating the expected Poisson distribution of reads/channel (xcrit = 7 reads/channel). Here we are able to visually identify overly productive channels (e.g., 191 reads/channel, etc) producing likely HQNRs.
 ![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_roi_q9_p005.png)
 
 ### HQNR Pore Occupancy
