@@ -305,7 +305,7 @@ docker run $Cmd $DockerPath/05_reads_of_interest/carrierseq_roi.fastq $DockerPat
 Cmd="$DockerOptions seqtk seq -a"
 docker run $Cmd $DockerPath/08_target_reads/carrierseq_target_reads.fastq > $output_folder/08_target_reads/carrierseq_target_reads.fasta # make target reads fasta
 echo 'Target reads saved to 08_target_reads!'
-echo Target target reads: 
+echo Total target reads: 
 
 # 07.02.1 grep - count target reads
 grep -c ">" $output_folder/08_target_reads/carrierseq_target_reads.fasta > $output_folder/08_target_reads/carrierseq_target_reads.txt # count target reads
