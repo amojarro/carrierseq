@@ -43,10 +43,12 @@ That's it!
 Note: You may need to first make the script executable with:
 
 ```chmod +x path/to/carrierseq.sh```
+or
+```chmod +x path/to/carrierseq_docker.sh```
 
 Reads to be analyzed must be compiled into a single fastq file and the carrier reference genome must be in fasta format.
 
-Run CarrierSeq with:
+```cd``` into your CarrierSeq folder containing the bash and python scripts and run CarrierSeq with:
 
 ```./carrierseq.sh -i <input.fastq> -r <reference.fasta> -q <q_score> -p <p_value> -o <output_directory> -t <bwa_threads>```
 
@@ -54,7 +56,7 @@ or with Docker...
 
 ```./carrierseq_docker.sh -i <input.fastq> -r <reference.fasta> -q <q_score> -p <p_value> -o <output_directory> -t <bwa_threads>```
 
--i -r and -o are mandatory flags, CarrierSeq will use the default values if -q -p or -t are not defined:
+-i, -r, and -o are mandatory flags, CarrierSeq will use the default values if -q, -p, or -t are not defined:
 
 ```
 bwa_threads = 1 
@@ -115,20 +117,18 @@ CarrierSeq will generate the following folders and files within your working dir
                      /02_channels_used.lst # Unique channels used during sequencing.
                      /03_channels_in_use.txt # Number of unique channels.
                      /04_lambda_value.txt # Lambda = Unkown Reads / Used Channels.
-                     /05_read_channel_threshold.txt # Critical read/channel (x_crit) threshold calculation summary.
-                     /06_xcrit_threshold_for_dictionary_search.txt # x_crit value.
+                     /05_read_channel_threshold.txt # Critical read/channel (xcrit) threshold calculation summary.
+                     /06_xcrit_threshold_for_dictionary_search.txt # xcrit value.
                      /07_poretools_roi_channels.lst # Channels used in reads of interest from fastq generated using poretools.
-                     /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using
-                                                # albacore or minknow or formatted channels from    
-                                                # 07_poretools_roi_channels.lst.
+                     /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using albacore or minknow or formatted channels from07_poretools_roi_channels.lst.
                      /09_target_channels.lst # "Good" channels used to sort target reads.
                      /10_albacore_target_channels.lst # "Good" channels list formatted for poretools fastq files.
                      /10_poretools_target_channels.lst # "Good" channel list formatted for albacore/minknow files.
-                     /xx_hqnr_channel_dictionary.txt # Raw HQNRs read/channel frequency dictionary for python.
-                     /xx_roi_channel_dictionary.txt # Raw reads of interest read/channel frequency dictionary for python.
-                     /xx_target_channel_dictionary.txt # Raw target reads read/channel frequency dictionary for python.
+                     /xx_hqnr_channel_dictionary.txt # HQNRs read/channel frequency dictionary for python.
+                     /xx_roi_channel_dictionary.txt # Reads of interest read/channel frequency dictionary for python.
+                     /xx_target_channel_dictionary.txt # Target reads read/channel frequency dictionary for python.
                      
-# Likely HQNRs (reads/channel > xcrit). 
+# Likely HQNRs (reads/channel > x). 
 07_hqnrs/carrierseq_hqnrs.fasta
         /carrierseq_hqnrs.fastq
         /carrierseq_hqnrs.lst
