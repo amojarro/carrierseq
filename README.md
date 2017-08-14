@@ -158,15 +158,15 @@ All Reads (Lambda + B. subtilis + Contamination + Noise)
 Total Reads: 547,478 reads
 Total Bases: 4,914,693,436 bases
 ###
-Reads of Interest (B. subtilis + Contamination + HQNRs)
+Reads of Interest (B. subtilis + Contamination + HQNRs) [05_reads_of_interest]
 Total Reads: 1,811 reads
 Total Bases: 8,132,374 bases
 ###
-HQNRS
+HQNRS [07_hqnrs]
 Total Reads: 1,179 reads (including 17 false negative B. subtilis reads)
 Total Bases: 7,282,767 bases
 ###
-Target Reads
+Target Reads [08_target_reads]
 Total Reads: 632 reads (including 474 true positive B. subtilis reads, 4 true positive contamination reads, and 54 false positive HQNRs)
 Total Bases: 849,607 bases
 ```
