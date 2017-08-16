@@ -143,12 +143,9 @@ CarrierSeq will generate the following folders and files within your working dir
 
 ## CarrierSeq Example
 Supplementary sequencing data available from NCBI 
-BioProject: 
-https://submit.ncbi.nlm.nih.gov/subs/bioproject/SUB2958733/overview
-BioSample: 
-https://www.ncbi.nlm.nih.gov/biosample/SAMN07509071
-SRA Download: 
-https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=SRR5935058
+BioProject: https://submit.ncbi.nlm.nih.gov/subs/bioproject/SUB2958733/overview </br>
+BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN07509071 </br>
+SRA Download: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=SRR5935058 </br>
 
 ### Library preparation and sequencing
 0.2 ng of B. subtilis DNA was prepared with 1 µg of Lambda DNA using the Oxford Nanopore Technologies (ONT) ligation sequencing kit (LSK-SQK108). The library was then sequenced on a MinION Mark-1B sequencer and R9.4 flowcell for 48 hours and basecalled using ONT’s Albacore (v1.10) offline basecaller.
