@@ -123,12 +123,12 @@ CarrierSeq will generate the following folders and files within your working dir
                      /08_roi_channels_clean.lst # Channels used in reads of interest from fastq generated using albacore or minknow or formatted channels from 07_poretools_roi_channels.lst.
                      /09_target_channels.lst # "Good" channels used to sort target reads.
                      /10_albacore_target_channels.lst # "Good" channels list formatted for poretools fastq files.
-                     /10_poretools_target_channels.lst # "Good" channel list formatted for albacore/minknow files.
+                     /10_poretools_target_channels.lst # "Good" channel list formatted for albacore/minknow fastq files.
                      /xx_hqnr_channel_dictionary.txt # HQNRs read/channel frequency dictionary for python.
                      /xx_roi_channel_dictionary.txt # Reads of interest read/channel frequency dictionary for python.
                      /xx_target_channel_dictionary.txt # Target reads read/channel frequency dictionary for python.
                      
-# Likely HQNRs (reads/channel > x). 
+# Likely HQNRs (reads/channel > xcrit). 
 07_hqnrs/carrierseq_hqnrs.fasta
         /carrierseq_hqnrs.fastq
         /carrierseq_hqnrs.lst
