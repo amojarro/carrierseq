@@ -143,7 +143,7 @@ CarrierSeq will generate the following folders and files within your working dir
 
 ## CarrierSeq Example
 Supplementary sequencing data available from NCBI </br>
-BioProject: https://submit.ncbi.nlm.nih.gov/subs/bioproject/SUB2958733/overview </br>
+BioProject: https://www.ncbi.nlm.nih.gov/bioproject/398368 </br>
 BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN07509071 </br>
 SRA Download: https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?run=SRR5935058 </br>
 
