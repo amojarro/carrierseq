@@ -1,3 +1,5 @@
+# from https://github.com/nanoporetech/fastq-filter
+# forked https://github.com/amojarro/fastq-filter
 # Primary author : Michael Micorescu (Michael.Micorescu(at)nanoporetech.com)
 # Modified by AM for CarrierSeq application
 
