@@ -6,7 +6,8 @@ bioRxiv doi: xxx.xxx.xxx
 
 CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing which employs a genomic carrier.
 
-Github Contributors: Angel Mojarro (@amojarro), Srinivasa Aditya Bhattaru (@sbhattaru), and Christopher E. Carr (@CarrCE).
+Github Contributors: Angel Mojarro (@amojarro), Srinivasa Aditya Bhattaru (@sbhattaru), and Christopher E. Carr (@CarrCE).</br> 
+fastq-filter from: https://github.com/nanoporetech/fastq-filter
 
 ### Motivation
 Long-read nanopore sequencing technology is of particular significance for taxonomic identification at or below the species level. For many environmental samples, the total extractable DNA is far below the current input requirements of nanopore sequencing, preventing “sample to sequence” metagenomics from low-biomass or recalcitrant samples.
@@ -185,4 +186,3 @@ The matrix illustrates the reads/channel distribution of B. subtilis, contaminat
 ### Target Reads Pore Occupancy
 “Good” channels identified by CarrierSeq as non-HQNR-associated (reads/channel ≤ 7). Channels producing 6 or more reads yield HQNRs that have satisfied our CarrierSeq parameters. By imposing a stricter p-value, CarrierSeq may be able to reject more HQNRs (e.g., xcrit = 5).
 ![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_target_reads_q9_p005.png)
-
