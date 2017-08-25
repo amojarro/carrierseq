@@ -6,7 +6,7 @@ bioRxiv doi: https://doi.org/10.1101/175281
 
 CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing which employs a genomic carrier.
 
-Github Contributors: Angel Mojarro (@amojarro), Srinivasa Aditya Bhattaru (@sbhattaru), and Christopher E. Carr (@CarrCE).</br> 
+Github Contributors: Angel Mojarro (@amojarro), Srinivasa Aditya Bhattaru (@sbhattaru), Christopher E. Carr (@CarrCE), and Vanessa Sochat (@vsoch).</br> 
 fastq-filter from: https://github.com/nanoporetech/fastq-filter
 
 ### Motivation
@@ -34,10 +34,16 @@ Alternatively, use Docker and the Docker script.
 ## Using Docker and Dockerhub
 
 1. Download & install Docker - https://www.docker.com/
-1. Start docker
-2. run ```docker pull mojarro/carrierseq:latest```
+2. Start docker
+3. run ```docker pull mojarro/carrierseq:latest```
 
 That's it!
+
+## Using Singularity
+
+1. Download and install Singularity (https://singularityware.github.io/install-linux)
+2. Build `singularity create --size 4000 carrierseq.img && sudo singularity bootstrap carrierseq.img Singularity`
+3. Run container!
 
 ## Using CarrierSeq 
 
