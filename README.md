@@ -41,9 +41,8 @@ That's it!
 
 ## Using Singularity
 
-1. Download and install Singularity (https://singularityware.github.io/install-linux)
-2. Build `singularity create --size 4000 carrierseq.img && sudo singularity bootstrap carrierseq.img Singularity`
-3. Run container!
+For instructions on using Singularity, see the [docs/singularity.md](docs/singularity.md).
+
 
 ## Using CarrierSeq 
 
