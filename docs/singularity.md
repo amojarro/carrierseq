@@ -139,15 +139,13 @@ Since the data is rather large, we are going to map a folder to our $PWD where t
 mkdir data
 
 # 1. Download data, map the data base to an empty folder on our local machine
-singularity run --app sra-toolkit --bind data:/scif/data carrierseq.img
-
 # 2. Perform mapping step of pipeline, mapping the same folder.
-singularity run --app mapping --bind data:/scif/data carrierseq.img
-
 # 3. perform poisson regression on filtered reads
-singularity run --app poisson --bind data:/scif/data carrierseq.img
-
 # 4. Finally, sort results
+
+singularity run --app download --bind data:/scif/data carrierseq.img
+singularity run --app mapping --bind data:/scif/data carrierseq.img
+singularity run --app poisson --bind data:/scif/data carrierseq.img
 singularity run --app sorting --bind data:/scif/data carrierseq.img
 ```
 
@@ -156,18 +154,75 @@ customize settings and environment variables. This demo is intended to use the d
 
 
 ## CarrierSeq Pipeline
-The common user might want access to the components of the pipeline that the software provides. In the case of CarrierSeq, this means mapping, poisson, and then sorting. If the image isn't provided (e.g., a Singularity Registry or Singularity Hub) the user can build from the build recipe file, `Singularity`:
+The common user might want access to the larger scoped pipeline that the software provides. In the case of CarrierSeq, this means (optionally, download) mapping, poisson, and then sorting. If the image isn't provided (e.g., a Singularity Registry or Singularity Hub) the user can build from the build recipe file, `Singularity`:
 
 ```
 sudo singularity build carrierseq.img Singularity
 ```
 
-As a user, you want a container that exposes enough metadata to run different steps of the pipeline, but you don't want to need to know the specifics of each command call or path within the container. 
+And then the various steps of the pipeline are run as was specified above:
+
+```
+singularity run --app download --bind data:/scif/data carrierseq.img
+singularity run --app mapping --bind data:/scif/data carrierseq.img
+singularity run --app poisson --bind data:/scif/data carrierseq.img
+singularity run --app sorting --bind data:/scif/data carrierseq.img
+```
+
+Given two containers that share the same input and output schema, I could
+swap out of the steps:
+
+
+```
+...
+singularity run --app poisson --bind data:/scif/data carrierseq.img
+singularity run --app sorting --bind data:/scif/data another.img
+```
+
+or even provide a single container with multiple options for the same step
+
+I could swap out the sorting step to use one from a d
+
+```
+...
+singularity run --app sorting1 --bind data:/scif/data sorting.img
+singularity run --app sorting2 --bind data:/scif/data sorting.img
+```
+
+As a user, you want a container that exposes enough metadata to run different steps of the pipeline, but you don't want to need to know the specifics of each command call or path within the container. In the above, I can direct the container to my mapped input directory
+and specify a step in the pipeline, and I dont need to understand how to use `bwa` or `grep` or `seqtk`, or any of the other software
+that makes up each.
+
 ## CarrierSeq Development
+The developer has a different use case - to have easy command line access to the lowest level of executables installed in the container. Given a global install of all software, without SCI-F I would need to look at `$PATH` to see what has been added to the path, and then list executables in path locations to find new software installed to, for example, `/usr/bin`. There is no way to easily and programatically "sniff" a container to understand the changes, and the container is a black development box, perhaps only understood by the creator or with careful inspection of the build recipe.
 
+In this use case, we want to build the development container.
 
-For the 
-1. Download and install Singularity (https://singularityware.github.io/install-linux). For this demo, we are using the development branch (2.4)
-2. Build `sudo singularity create --size 4000 carrierseq.img && sudo singularity bootstrap carrierseq.img Singularity`
-3. Run container!
+```
+sudo singularity build carrierseq.dev.img Singularity.devel
+```
 
+Now when we look at apps, we see all the core software that can be combined in specific ways to produce a pipeline step like "mapping".
+
+```
+singularity apps carrierseq.dev.img
+bwa
+fqtrim
+python
+seqtk
+sra-toolkit
+```
+
+each of which might be run, exec to activate the app environment, or shell to shell into the container under the context of a specific app:
+
+```
+# Open interactive python
+singularity run --app python carrierseq.dev.img
+
+# Load container with bwa on path
+$ singularity shell --app bwa carrierseq.dev.img
+$ which bwa
+$ /scif/apps/bwa/bin/bwa
+```
+
+These two images that serve equivalent software is a powerful example of the flexibility of SCI-F. The container creator can choose the level of detail to expose to a user that doesn't know how it was created, or perhaps has varying levels of expertise. A lab that is using core tools for working with sequence data might have preference for the development container, while a finalized pipeline distributed with a publication would have preference for the first. In both cases, the creator doesn't need to write custom scripts for a container to run a particular app, or to expose environment variables, tests, or labels. By way of using SCI-F, this happens automatically. 

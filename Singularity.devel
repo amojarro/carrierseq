@@ -30,7 +30,7 @@ apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev sa
 # Install biopython
 pip install biopython
 
-%appinstall sra-tooklit
+%appinstall sra-toolkit
     wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz
     tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
     mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
@@ -56,7 +56,7 @@ exec "$@"
 %appinstall bwa
     git clone https://github.com/lh3/bwa.git build
     cd build && git checkout v0.7.15 && make
-    mkdir ../bin && mv -t ../bin bwa bwakit
+    mv -t ../bin bwa bwakit
 
 %apprun bwa
     exec bwa "$@"
@@ -71,16 +71,13 @@ exec "$@"
 %appinstall seqtk
     git clone https://github.com/lh3/seqtk.git build
     cd build && git checkout v1.2 && make
-    mkdir ../bin && mv seqtk ../bin
+    mv seqtk ../bin
 
 %applabels seqtk
     version v1.2
 
 %apprun seqtk
     exec seqtk "$@"
-
-%appinstall python
-    mkdir bin
 
 %apprun python
     exec /usr/bin/python "$@"
@@ -92,7 +89,7 @@ exec "$@"
 %appinstall fqtrim
     wget http://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
     tar xvfz fqtrim-0.9.5.tar.gz && cd fqtrim-0.9.5 && make release
-    mkdir ../bin && mv fqtrim ../bin
+    mv fqtrim ../bin
 
 %apphelp fqtrim
     exec fqtrim --help

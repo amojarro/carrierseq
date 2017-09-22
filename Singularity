@@ -123,7 +123,7 @@ export REFERENCE_FILE
     mkdir -p $DATAROOT/04_01_low_complexity_reads # save low-complexity reads
 
     # Input folder for poisson
-    mkdir -p $DATAROOT/mapping/05_reads_of_interest # filtered reads to poisson calculation
+    mkdir -p $DATAROOT/05_reads_of_interest # filtered reads to poisson calculation
     
 
 %appinstall mapping
@@ -182,7 +182,7 @@ python/quality_score_filter.py bin/quality_score_filter.py
 
     # 03 quality_score_filter.py - discard low-quality reads
     echo Applying quality filter...
-    python quality_score_filter.py $output_folder/02_seqtk/unmapped_reads.fastq $output_folder/03_fastqc/unmapped_reads_qc $q_score
+    python ${SINGULARITY_APPROOT}/bin/quality_score_filter.py $output_folder/02_seqtk/unmapped_reads.fastq $output_folder/03_fastqc/unmapped_reads_qc $q_score
     echo Reads saved to 03_fastqc!
 
     # 03.1 grep - count "high-quality" reads
@@ -266,7 +266,7 @@ echo Reads saved to 04_01_low_complexity_reads!
     export XCrit ROIChannels LambdaValue TotalROIs ChannelsInUse output_folder p_value MAPPING
  
 %appsetup poisson
-    DATAROOT= "${SINGULARITY_ROOTFS}/scif/data/poisson"
+    DATAROOT="${SINGULARITY_ROOTFS}/scif/data/poisson"
     mkdir -p $DATAROOT/06_poisson_calculation # calculations for sorting "real" reads versus "possible noise"
     mkdir -p $DATAROOT/07_hqnrs # "high-quality noise reads" 
     mkdir -p $DATAROOT/08_target_reads # final output reads to be analyzed if target is unknown
@@ -290,7 +290,7 @@ python/frequency_calc.py bin/frequency_calc.py
 
     # 06.02 python - calculate lambda for poisson calculation
     echo Calculating lambda and x_crit values...
-    python calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/04_lambda_value.txt
+    python ${SINGULARITY_APPROOT}/bin/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/04_lambda_value.txt
 
     # 06.02.1 python - calculate x_critical
     python xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/05_read_channel_threshold.txt
