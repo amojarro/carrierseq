@@ -94,6 +94,24 @@ README.md
     cat ${SINGULARITY_APPROOT}/README.md
 
 
+%appfiles reference
+reference/lambda_ecoli.fa
+
+%apphelp reference
+This module only exists to define the location of the reference, at
+/scif/apps/reference/lambda_ecoli.fa
+
+# To get externally:
+singularity exec --app reference env | grep REFERENCE_FILE
+
+# To get internally
+REFERENCE=("/scif/apps/reference/"`ls /scif/apps/reference`)
+
+%appenv reference
+REFERENCE_FILE=/scif/apps/reference/lambda_ecoli.fa
+export REFERENCE_FILE
+
+
 %appsetup mapping
     DATAROOT="${SINGULARITY_ROOTFS}/scif/data/mapping"
     mkdir -p $DATAROOT/00_bwa # map all reads to carrier reference genome
