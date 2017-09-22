@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# CarrierSeq Singularity:
+# 1. download: Download data, map the data base to an empty folder on our local machine
+# 2. mapping: Perform mapping step of pipeline, mapping the same folder.
+# 3. poisson: perform poisson regression on filtered reads
+# 4. sorting: Finally, sort results
+
+
 if [ $# -eq 0 ]
   then
     echo "Please provide a local data folder to map to the container."
@@ -21,14 +28,8 @@ else
     echo "Found carrierseq.img"
 fi
 
-# 1. Download data, map the data base to an empty folder on our local machine
-singularity run --app sra-toolkit --bind $DATA:/scif/data carrierseq.img
 
-# 2. Perform mapping step of pipeline, mapping the same folder.
+singularity run --app download --bind $DATA:/scif/data carrierseq.img
 singularity run --app mapping --bind $DATA:/scif/data carrierseq.img
-
-# 3. perform poisson regression on filtered reads
 singularity run --app poisson --bind $DATA:/scif/data carrierseq.img
-
-# 4. Finally, sort results
 singularity run --app sorting --bind $DATA:/scif/data carrierseq.img

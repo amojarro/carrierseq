@@ -30,33 +30,27 @@ apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev sa
 # Install biopython
 pip install biopython
 
-%apprun setup
-#!/bin/bash
+%appinstall sra-tooklit
+    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz
+    tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
+    mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
 
-if [[ $# -eq 0 ]] ; then
-    echo "Please supply an output folder."
+%apphelp sra-toolkit
+  This module includes the entire sra-toolkit for ubuntu. You will likely want to
+  use it to manipulate data that is mounted to your local machine (given the
+  container is read only)
+
+      singularity run --app sra-toolkit --bind data:/scif/data <container>
+
+%apprun sra-toolkit
+
+if [ $# -eq 0 ]
+  then
+    echo "Apps provided include:"
+    ls /scif/apps/sra-toolkit/bin -1
     exit 0
 fi
-
-output_folder="$1"
-
-    # Make output directories
-    echo Creating output directories...
-    mkdir -p $output_folder/fastq_tmp # Temporarily copies reads into docker working folder
-    mkdir -p $output_folder/reference_tmp # Temporarily copies reference genome into docker working folder
-    mkdir -p $output_folder/00_bwa # map all reads to carrier reference genome
-    mkdir -p $output_folder/01_samtools # extract unmapped sam file
-    mkdir -p $output_folder/02_seqtk # extract unmapped reads
-    mkdir -p $output_folder/03_fastqc # discard low-quality reads < qx
-    mkdir -p $output_folder/03_01_low_quality_reads # save low-quality reads
-    mkdir -p $output_folder/04_fqtrim_dusted # discard low complexity reads
-    mkdir -p $output_folder/04_01_low_complexity_reads # save low-complexity reads
-    mkdir -p $output_folder/05_reads_of_interest # filtered reads to poisson calculation
-    mkdir -p $output_folder/06_poisson_calculation # calculations for sorting "real" reads versus "possible noise"
-    mkdir -p $output_folder/07_hqnrs # "high-quality noise reads" 
-    mkdir -p $output_folder/08_target_reads # final output reads to be analyzed if target is unknown
-    tree $output_folder
-
+exec "$@"
 
 
 %appinstall bwa

@@ -55,12 +55,12 @@ pip install biopython
 # The client will map to the respective data folders, always
 
 
-%appinstall sra-tooklit
+%appinstall download
     wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz
     tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
     mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
 
-%apphelp sra-toolkit
+%apphelp download
   This module includes the entire sra-toolkit for ubuntu. For this container,
   it is (hard coded) to get the example data, and download to /scif/data. Note
   that you must run with a local folder mapped to /scif/data for this to work,
@@ -80,7 +80,7 @@ pip install biopython
 
 
 
-%apprun sra-toolkit
+%apprun download
    wget https://sra-download.ncbi.nlm.nih.gov/traces/sra51/SRR/005795/SRR5935058 -O /scif/data/SRR5935058
    fastq-dump -I  --split-files SRR5935058 -v --outdir /scif/data
 
@@ -95,7 +95,7 @@ README.md
 
 
 %appsetup mapping
-    DATAROOT= "${SINGULARITY_ROOTFS}/scif/data/mapping"
+    DATAROOT="${SINGULARITY_ROOTFS}/scif/data/mapping"
     mkdir -p $DATAROOT/00_bwa # map all reads to carrier reference genome
     mkdir -p $DATAROOT/01_samtools # extract unmapped sam file
     mkdir -p $DATAROOT/02_seqtk # extract unmapped reads
@@ -109,19 +109,21 @@ README.md
     
 
 %appinstall mapping
+
     # Install bwa
     git clone https://github.com/lh3/bwa.git build
-    cd build && git checkout v0.7.15 && make
-    mkdir ../bin && mv -t ../bin bwa bwakit
+    cd build && git checkout v0.7.15
+    make
+    mv -t ../bin bwa bwakit 
     
     # Install fqtrim
-    wget http://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
+    cd .. && wget http://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
     tar xvfz fqtrim-0.9.5.tar.gz && cd fqtrim-0.9.5 && make release
-    mkdir ../bin && mv fqtrim ../bin
-
+    mkdir ../bin
+    mv fqtrim ../bin
 
 %appenv mapping
-    all_reads=${CSEQ_ALLREADS:-"/scif/data/*.fastq"}
+    all_reads=${CSEQ_ALLREADS:-/scif/data/SRR5935058_1.fastq}
     reference_genome="${CSEQ_REF:-}"
     bwa_threads="${CSEQ_BWATHREADS:-1}"
     q_score="${CSEQ_QSCORE:-9}"
