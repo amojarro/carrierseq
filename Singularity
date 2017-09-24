@@ -55,10 +55,10 @@ pip install biopython
 # The client will map to the respective data folders, always
 
 
-%appinstall download
-    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz
-    tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
-    mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
+#%appinstall download
+    #wget https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=1
+    #tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
+    #mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
 
 %apphelp download
   This module includes the entire sra-toolkit for ubuntu. For this container,
@@ -137,7 +137,6 @@ export REFERENCE_FILE
     # Install fqtrim
     cd .. && wget http://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
     tar xvfz fqtrim-0.9.5.tar.gz && cd fqtrim-0.9.5 && make release
-    mkdir ../bin
     mv fqtrim ../bin
 
 %appenv mapping
