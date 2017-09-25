@@ -87,7 +87,7 @@ mapping
 poisson
 readme
 sorting
-sra-tooklit
+download
 ```
 
 And then we can ask for help for any of the pipeline steps:
@@ -139,11 +139,13 @@ Since the data is rather large, we are going to map a folder to our $PWD where t
 mkdir data
 
 # 1. Download data, map the data base to an empty folder on our local machine
+#     (we actually will do this from the browser as the sri toolkit is changed.
 # 2. Perform mapping step of pipeline, mapping the same folder.
 # 3. perform poisson regression on filtered reads
 # 4. Finally, sort results
 
-singularity run --app download --bind data:/scif/data carrierseq.img
+# Download data from https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0
+# See issue --> https://github.com/amojarro/carrierseq/issues/1
 singularity run --app mapping --bind data:/scif/data carrierseq.img
 singularity run --app poisson --bind data:/scif/data carrierseq.img
 singularity run --app sorting --bind data:/scif/data carrierseq.img
@@ -160,15 +162,25 @@ The common user might want access to the larger scoped pipeline that the softwar
 sudo singularity build carrierseq.img Singularity
 ```
 
+The author is still working on updating the automated download, for now download from [here](https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0) and then move into some data folder you intend to mount:
+
+``
+mv $HOME/Downloads/all_reads.fastq data/
+
+```
+
 And then the various steps of the pipeline are run as was specified above:
 
 ```
-singularity run --app download --bind data:/scif/data carrierseq.img
 singularity run --app mapping --bind data:/scif/data carrierseq.img
 singularity run --app poisson --bind data:/scif/data carrierseq.img
 singularity run --app sorting --bind data:/scif/data carrierseq.img
 ```
 
+### 1.
+
+
+## How Can I Change It?
 Given two containers that share the same input and output schema, I could
 swap out of the steps:
 

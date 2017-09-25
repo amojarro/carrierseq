@@ -55,34 +55,14 @@ pip install biopython
 # The client will map to the respective data folders, always
 
 
-#%appinstall download
-    #wget https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=1
-    #tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
-    #mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
-
 %apphelp download
-  This module includes the entire sra-toolkit for ubuntu. For this container,
-  it is (hard coded) to get the example data, and download to /scif/data. Note
-  that you must run with a local folder mapped to /scif/data for this to work,
-  as the image runs in read only mode.
+   The original sra-toolkit does not serve the correct data, so for now you 
+   should download data from 
+  
+   https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0) and then move into some data folder you intend to mount:
 
-      singularity run --app sra-toolkit --bind data:/scif/data carrierseq.img
+      mv $HOME/Downloads/all_reads.fastq data/
 
-  This will obtain SRR5935058, use fastq-dump to extract it to /scif/data. You can
-  also access any of the commands (eg, prefetch) by exec-ing to the container
-
-      singularity exec --app sra-toolkit --bind data:/scif/data carrierseq.img prefetch
-
-  Or you can obtain your own data with a different method, and map to the container.
-  When you have data, look at the next step:
-
-      singularity run --app mapping --bind data:/scif/data carrierseq.img
-
-
-
-%apprun download
-   wget https://sra-download.ncbi.nlm.nih.gov/traces/sra51/SRR/005795/SRR5935058 -O /scif/data/SRR5935058
-   fastq-dump -I  --split-files SRR5935058 -v --outdir /scif/data
 
 %apphelp readme
 Print the repository's README.md to the console
@@ -92,7 +72,6 @@ README.md
 
 %apprun readme
     cat ${SINGULARITY_APPROOT}/README.md
-
 
 %appfiles reference
 reference/lambda_ecoli.fa
@@ -140,8 +119,8 @@ export REFERENCE_FILE
     mv fqtrim ../bin
 
 %appenv mapping
-    all_reads=${CSEQ_ALLREADS:-/scif/data/SRR5935058_1.fastq}
-    reference_genome="${CSEQ_REF:-}"
+    all_reads=${CSEQ_ALLREADS:-${SINGULARITY_DATA}/all_reads.fastq}
+    reference_genome="${CSEQ_REF:-${APPROOT_reference}/lambda_ecoli.fa}"
     bwa_threads="${CSEQ_BWATHREADS:-1}"
     q_score="${CSEQ_QSCORE:-9}"
     output_folder="${SINGULARITY_APPDATA}"
@@ -229,7 +208,7 @@ python/quality_score_filter.py bin/quality_score_filter.py
 
     # 04.01.2 seqtk - make fasta file
     seqtk seq -a $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fastq > $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fasta
-echo Reads saved to 04_01_low_complexity_reads!
+    echo Reads saved to 04_01_low_complexity_reads!
 
     # 04.01.3 grep - count low-complexity reads from fasta file
     grep -c ">" $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.fasta > $output_folder/04_01_low_complexity_reads/low_complexity_reads_qc.txt
@@ -253,16 +232,15 @@ echo Reads saved to 04_01_low_complexity_reads!
     fqtrim-version v0.9.5
 
 %appenv poisson
-    MAPPING=${MAPPING:-/scif/data/mapping}
-    all_reads=${CARRIERSEQ_ALLREADS:-}
+    all_reads=${CARRIERSEQ_ALLREADS:-/scif/data/all_reads.fastq}
     p_value="${CARRIERSEQ_PVALUE:-0.0001}"
     output_folder="${SINGULARITY_APPDATA}"
     ChannelsInUse="$output_folder/06_poisson_calculation/03_channels_in_use.txt"
-    TotalROIs="$MAPPING/05_reads_of_interest/carrierseq_roi.txt"
+    TotalROIs="$APPROOT_mapping/05_reads_of_interest/carrierseq_roi.txt"
     LambdaValue="$output_folder/06_poisson_calculation/04_lambda_value.txt"
     ROIChannels="$output_folder/06_poisson_calculation/08_roi_channels_clean.lst"
     XCrit="$output_folder/06_poisson_calculation/06_xcrit_threshold_for_dictionary_search.txt"
-    export XCrit ROIChannels LambdaValue TotalROIs ChannelsInUse output_folder p_value MAPPING
+    export XCrit ROIChannels LambdaValue TotalROIs ChannelsInUse output_folder p_value
  
 %appsetup poisson
     DATAROOT="${SINGULARITY_ROOTFS}/scif/data/poisson"
@@ -298,26 +276,24 @@ python/frequency_calc.py bin/frequency_calc.py
 
     # 06.03 grep - get channel list from carrierseq_roi.fasta (now compatible with poretools and albacore fastqs)
     echo 'Extracting read IDs and channels from reads of interest....'
-    grep -Eo '_ch[0-9]+_' $MAPPING/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' | sed 's/ch//g' >  $output_folder/06_poisson_calculation/07_poretools_roi_channels.lst # Get Channel List from poretools output
+    grep -Eo '_ch[0-9]+_' $APPROOT_mapping/05_reads_of_interest/carrierseq_roi.fasta | sed 's/_//g' | sed 's/ch//g' >  $output_folder/06_poisson_calculation/07_poretools_roi_channels.lst # Get Channel List from poretools output
     awk 'NR % 2 == 0' $output_folder/06_poisson_calculation/07_poretools_roi_channels.lst | sed 's/_//g' | sed 's/ch//g' > $output_folder/06_poisson_calculation/08_roi_channels_clean.lst # Remove duplicate channels from poretools fastq
-    grep -Eo 'ch=[0-9]+' $MAPPING/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' >> $output_folder/06_poisson_calculation/08_roi_channels_clean.lst # Get channel list from albacore fastq
+    grep -Eo 'ch=[0-9]+' $APPROOT_mapping/05_reads_of_interest/carrierseq_roi.fasta | sed 's/ch=//g' >> $output_folder/06_poisson_calculation/08_roi_channels_clean.lst # Get channel list from albacore fastq
 
     # 06.03 pyton - Calculate Frequency and create channel dictionary
     echo Creating channel frequency dictionaries...
     python frequency_calc.py $ROIChannels $XCrit $output_folder/06_poisson_calculation/xx_roi_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_hqnr_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_target_channel_dictionary.txt $output_folder/06_poisson_calculation/09_target_channels.lst
     echo Poisson caculation complete! Files saved to 06_poisson_calculation.
 
-
 %appenv sorting
-    MAPPING=${MAPPING:-/scif/data/mapping}
     POISSON=${POISSON:-/scif/data/poisson}
     output_folder="${SINGULARITY_APPDATA}"
     PSorter="$POISSON/06_poisson_calculation/09_target_channels.lst"
-    ROIids="$MAPPING/04_fqtrim_dusted/unmapped_reads_qc_dusted.lst"
+    ROIids="$APPROOT_mapping/04_fqtrim_dusted/unmapped_reads_qc_dusted.lst"
     Poretools="$POISSON/06_poisson_calculation/10_poretools_target_channels.lst"
     Albacore="$POISSON/06_poisson_calculation/10_albacore_target_channels.lst"
-    ROIHeader="$MAPPING/05_reads_of_interest/carrierseq_roi_header.lst"
-    export output_folder PSorter ROIids Pretools Albacore MAPPING POISSON ROIHeader
+    ROIHeader="$APPROOT_mapping/05_reads_of_interest/carrierseq_roi_header.lst"
+    export output_folder PSorter ROIids Pretools Albacore POISSON ROIHeader
 
 %appsetup sorting
     DATAROOT= "${SINGULARITY_ROOTFS}/scif/data/sorting"
@@ -332,7 +308,7 @@ python/frequency_calc.py bin/frequency_calc.py
     sed 's/^/_ch/' $PSorter | sed 's/$/_/' > $POISSON/06_poisson_calculation/10_poretools_target_channels.lst
 
     # Dump reads of interest header read id, channel, etc
-    grep -e '>' $MAPPING/05_reads_of_interest/carrierseq_roi.fasta | sed 's/>//g' > $MAPPING/05_reads_of_interest/carrierseq_roi_header.lst # dump all rois with channels
+    grep -e '>' $APPROOT_mapping/05_reads_of_interest/carrierseq_roi.fasta | sed 's/>//g' > $APPROOT_mapping/05_reads_of_interest/carrierseq_roi_header.lst # dump all rois with channels
 
     echo Identifying target reads...
     # 07 grep - identify target read ids from channel grep poretools and albacore format
