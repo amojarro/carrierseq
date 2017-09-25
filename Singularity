@@ -1,5 +1,5 @@
 # To build the container (Singularity version 2.4):
-# singularity build carrierseq.img Singularity
+# sudo singularity build carrierseq.img Singularity
 #
 # This is an example of a Singularity container delivering a specific analysis
 # pipeline. A set of different steps are installed to each app in the container 
@@ -27,7 +27,12 @@ From: ubuntu:14.04
     fastq-filter from: https://github.com/nanoporetech/fastq-filter
 
     To run a typical pipeline, you might do:
-    #TODO: add here
+    
+    # Download data
+    singularity run --app mapping --bind data:/scif/data carrierseq.img
+    singularity run --app poisson --bind data:/scif/data carrierseq.img
+    singularity run --app sorting --bind data:/scif/data carrierseq.img
+
 
 %labels
 bioRxiv-doi https://doi.org/10.1101/175281
@@ -58,7 +63,6 @@ pip install biopython
 %apphelp download
    The original sra-toolkit does not serve the correct data, so for now you 
    should download data from 
-  
    https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0) and then move into some data folder you intend to mount:
 
       mv $HOME/Downloads/all_reads.fastq data/
@@ -90,21 +94,7 @@ REFERENCE=("/scif/apps/reference/"`ls /scif/apps/reference`)
 REFERENCE_FILE=/scif/apps/reference/lambda_ecoli.fa
 export REFERENCE_FILE
 
-
-%appsetup mapping
-    DATAROOT="${SINGULARITY_ROOTFS}/scif/data/mapping"
-    mkdir -p $DATAROOT/00_bwa # map all reads to carrier reference genome
-    mkdir -p $DATAROOT/01_samtools # extract unmapped sam file
-    mkdir -p $DATAROOT/02_seqtk # extract unmapped reads
-    mkdir -p $DATAROOT/03_fastqc # discard low-quality reads < qx
-    mkdir -p $DATAROOT/03_01_low_quality_reads # save low-quality reads
-    mkdir -p $DATAROOT/04_fqtrim_dusted # discard low complexity reads
-    mkdir -p $DATAROOT/04_01_low_complexity_reads # save low-complexity reads
-
-    # Input folder for poisson
-    mkdir -p $DATAROOT/05_reads_of_interest # filtered reads to poisson calculation
     
-
 %appinstall mapping
 
     # Install bwa
@@ -114,13 +104,14 @@ export REFERENCE_FILE
     mv -t ../bin bwa bwakit 
     
     # Install fqtrim
-    cd .. && wget http://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
+    cd .. 
+    wget https://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
     tar xvfz fqtrim-0.9.5.tar.gz && cd fqtrim-0.9.5 && make release
     mv fqtrim ../bin
 
 %appenv mapping
-    all_reads=${CSEQ_ALLREADS:-${SINGULARITY_DATA}/all_reads.fastq}
-    reference_genome="${CSEQ_REF:-${APPROOT_reference}/lambda_ecoli.fa}"
+    all_reads=${SINGULARITY_DATA}/all_reads.fastq
+    reference_genome=${APPROOT_reference}/lambda_ecoli.fa
     bwa_threads="${CSEQ_BWATHREADS:-1}"
     q_score="${CSEQ_QSCORE:-9}"
     output_folder="${SINGULARITY_APPDATA}"
@@ -131,8 +122,21 @@ python/quality_score_filter.py bin/quality_score_filter.py
 
 %apprun mapping
 
+    mkdir -p ${SINGULARITY_APPDATA}/00_bwa # map all reads to carrier reference genome
+    mkdir -p ${SINGULARITY_APPDATA}/01_samtools # extract unmapped sam file
+    mkdir -p ${SINGULARITY_APPDATA}/02_seqtk # extract unmapped reads
+    mkdir -p ${SINGULARITY_APPDATA}/03_fastqc # discard low-quality reads < qx
+    mkdir -p ${SINGULARITY_APPDATA}/03_01_low_quality_reads # save low-quality reads
+    mkdir -p ${SINGULARITY_APPDATA}/04_fqtrim_dusted # discard low complexity reads
+    mkdir -p ${SINGULARITY_APPDATA}/04_01_low_complexity_reads # save low-complexity reads
+
+    # Input folder for poisson
+    mkdir -p ${SINGULARITY_APPDATA}/05_reads_of_interest # filtered reads to poisson calculation
+
     echo Indexing reference genome...
     # -01 bwa - Index carrier reference genome
+    cp $reference_genome $SINGULARITY_APPDATA/lambda_ecoli.fa
+    reference_genome=$SINGULARITY_APPDATA/lambda_ecoli.fa
     bwa index $reference_genome
 
     # 00 bwa - map $all_reads to the $reference_genome
@@ -242,11 +246,6 @@ python/quality_score_filter.py bin/quality_score_filter.py
     XCrit="$output_folder/06_poisson_calculation/06_xcrit_threshold_for_dictionary_search.txt"
     export XCrit ROIChannels LambdaValue TotalROIs ChannelsInUse output_folder p_value
  
-%appsetup poisson
-    DATAROOT="${SINGULARITY_ROOTFS}/scif/data/poisson"
-    mkdir -p $DATAROOT/06_poisson_calculation # calculations for sorting "real" reads versus "possible noise"
-    mkdir -p $DATAROOT/07_hqnrs # "high-quality noise reads" 
-    mkdir -p $DATAROOT/08_target_reads # final output reads to be analyzed if target is unknown
 
 %appfiles poisson
 python/calculate_lambda.py bin/calculate_lambda.py
@@ -254,6 +253,10 @@ python/xcrit.py bin/xcrit.py
 python/frequency_calc.py bin/frequency_calc.py
 
 %apprun poisson
+    mkdir -p ${SINGULARITY_APPDATA}/06_poisson_calculation # calculations for sorting "real" reads versus "possible noise"
+    mkdir -p ${SINGULARITY_APPDATA}/07_hqnrs # "high-quality noise reads" 
+    mkdir -p ${SINGULARITY_APPDATA}/08_target_reads # final output reads to be analyzed if target is unknown
+
     echo Starting Poisson calculation...
     # 06 grep - extract all channels used, delete duplicates to count unique (n/512) channels used
     echo 'Counting total channels in use...'
@@ -295,12 +298,11 @@ python/frequency_calc.py bin/frequency_calc.py
     ROIHeader="$APPROOT_mapping/05_reads_of_interest/carrierseq_roi_header.lst"
     export output_folder PSorter ROIids Pretools Albacore POISSON ROIHeader
 
-%appsetup sorting
-    DATAROOT= "${SINGULARITY_ROOTFS}/scif/data/sorting"
-    mkdir -p $DATAROOT/07_hqnrs
-    mkdir -p $DATAROOT/08_target_reads
 
 %apprun sorting
+    mkdir -p ${SINGULARITY_APPDATA}/07_hqnrs
+    mkdir -p ${SINGULARITY_APPDATA}/08_target_reads
+
     echo 'Preparing files to begin Poisson sorting...'
 
     # Make grep search compatible for albacore and poretools header format

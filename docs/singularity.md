@@ -27,8 +27,14 @@ Building looks like this:
 sudo singularity build --writable carrierseq.img Singularity
 ```
 
-Note that `--writable` is only being done because we potentially want to develop, or
-tweak our image. Once we are happy and want to build "for reals" we would run this:
+If you prefer to have a "sandbox" directory, you can do this:
+
+```
+sudo singularity build --sandbox carrierseq.img Singularity
+```
+
+I don't understand why we have both. I'm ok with this. If you don't need a writable
+image (for testing) just build a final one:
 
 ```
 sudo singularity build carrierseq.img Singularity
@@ -57,6 +63,20 @@ singularity help carrierseq.img
     see:
            singularity run --app readme carrierseq.img | less for more detail
    
+```
+
+### SCI-F Apps
+
+You can see apps in the image, as instructed:
+
+```
+singularity apps carrierseq.img
+download
+mapping
+poisson
+readme
+reference
+sorting
 ```
 
 The command mentioned at the body is an internal provided only to add, preserve, and
@@ -177,7 +197,24 @@ singularity run --app poisson --bind data:/scif/data carrierseq.img
 singularity run --app sorting --bind data:/scif/data carrierseq.img
 ```
 
-### 1.
+### 1. Mapping
+To run mapping, bind the data folder to the image, and specify the app to be mapping:
+
+```
+singularity run --app mapping --bind data:/scif/data carrierseq.img
+```
+
+## 2. Poisson
+
+```
+singularity run --app poisson --bind data:/scif/data carrierseq.img
+```
+
+## 3. Sorting
+
+```
+singularity run --app sorting --bind data:/scif/data carrierseq.img
+```
 
 
 ## How Can I Change It?
@@ -187,13 +224,12 @@ swap out of the steps:
 
 ```
 ...
-singularity run --app poisson --bind data:/scif/data carrierseq.img
+singularity run --app sorting --bind data:/scif/data carrierseq.img
 singularity run --app sorting --bind data:/scif/data another.img
 ```
 
 or even provide a single container with multiple options for the same step
 
-I could swap out the sorting step to use one from a d
 
 ```
 ...
@@ -204,6 +240,7 @@ singularity run --app sorting2 --bind data:/scif/data sorting.img
 As a user, you want a container that exposes enough metadata to run different steps of the pipeline, but you don't want to need to know the specifics of each command call or path within the container. In the above, I can direct the container to my mapped input directory
 and specify a step in the pipeline, and I dont need to understand how to use `bwa` or `grep` or `seqtk`, or any of the other software
 that makes up each.
+
 
 ## CarrierSeq Development
 The developer has a different use case - to have easy command line access to the lowest level of executables installed in the container. Given a global install of all software, without SCI-F I would need to look at `$PATH` to see what has been added to the path, and then list executables in path locations to find new software installed to, for example, `/usr/bin`. There is no way to easily and programatically "sniff" a container to understand the changes, and the container is a black development box, perhaps only understood by the creator or with careful inspection of the build recipe.
