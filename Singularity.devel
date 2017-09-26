@@ -1,5 +1,5 @@
 # To build the container:
-# Singularity.level1
+# Singularity.devel
 #
 # This is an example of a Singularity container that serves software at the
 # smallest unit - the individual executables each being associated with an app
@@ -16,9 +16,16 @@ From: ubuntu:14.04
 
 
 %help
-    echo "This container is installed with the following apps:"
-    tree /scif/apps
-    echo "Type singularity --app <appname> <container>.img help to see help
+    This container is installed with core software for carrierseq.
+
+    # See apps installed
+    singularity apps carrierseq.img
+
+    # Get help for an app
+    singularity help --app <appname> <container>.img
+
+    # Run an app
+    singularity run --app <appname> <container>.img
 
 
 %post
