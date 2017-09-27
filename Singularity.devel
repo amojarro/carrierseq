@@ -1,0 +1,108 @@
+# To build the container:
+# Singularity.devel
+#
+# This is an example of a Singularity container that serves software at the
+# smallest unit - the individual executables each being associated with an app
+# This strategy would give a user most flexibility to create custom pipelines,
+# but also be more challenging in that the user would need to know how to use
+# each tool
+
+# To create:
+# singularity create --size 2000 carrierseq.img
+# sudo singularity bootstrap carrierseq.img Singularity
+
+Bootstrap: docker
+From: ubuntu:14.04
+
+
+%help
+    This container is installed with core software for carrierseq.
+
+    # See apps installed
+    singularity apps carrierseq.img
+
+    # Get help for an app
+    singularity help --app <appname> <container>.img
+
+    # Run an app
+    singularity run --app <appname> <container>.img
+
+
+%post
+apt-get update &&
+
+# Install Shared Dependencies
+apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk python-numpy python-scipy vim tree
+
+# Install biopython
+pip install biopython
+
+%appinstall sra-toolkit
+    wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz
+    tar -xzvf sratoolkit.2.8.2-1-ubuntu64.tar.gz
+    mv sratoolkit.2.8.2-1-ubuntu64/bin/* bin/
+
+%apphelp sra-toolkit
+  This module includes the entire sra-toolkit for ubuntu. You will likely want to
+  use it to manipulate data that is mounted to your local machine (given the
+  container is read only)
+
+      singularity run --app sra-toolkit --bind data:/scif/data <container>
+
+%apprun sra-toolkit
+
+if [ $# -eq 0 ]
+  then
+    echo "Apps provided include:"
+    ls /scif/apps/sra-toolkit/bin -1
+    exit 0
+fi
+exec "$@"
+
+
+%appinstall bwa
+    git clone https://github.com/lh3/bwa.git build
+    cd build && git checkout v0.7.15 && make
+    mv -t ../bin bwa bwakit
+
+%apprun bwa
+    exec bwa "$@"
+    
+%applabels bwa
+    version v0.7.15
+
+%apphelp bwa
+    exec bwa --help
+
+
+%appinstall seqtk
+    git clone https://github.com/lh3/seqtk.git build
+    cd build && git checkout v1.2 && make
+    mv seqtk ../bin
+
+%applabels seqtk
+    version v1.2
+
+%apprun seqtk
+    exec seqtk "$@"
+
+%apprun python
+    exec /usr/bin/python "$@"
+
+%appfiles python
+    python/quality_score_filter.py bin/quality_score_filter.py
+
+
+%appinstall fqtrim
+    wget http://ccb.jhu.edu/software/fqtrim/dl/fqtrim-0.9.5.tar.gz
+    tar xvfz fqtrim-0.9.5.tar.gz && cd fqtrim-0.9.5 && make release
+    mv fqtrim ../bin
+
+%apphelp fqtrim
+    exec fqtrim --help
+
+%applabels fqtrim
+    version v0.9.5
+
+%apprun fqtrim
+    exec fqtrim "$@"
