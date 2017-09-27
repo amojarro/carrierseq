@@ -7,28 +7,7 @@ FROM ubuntu:14.04
 RUN apt-get update
 
 # Install Dependencies
-RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk python-numpy python-scipy
-
-# Install biopython
-RUN pip install biopython
-
-# Install bwa
-RUN git clone https://github.com/lh3/bwa.git /tmp/bwa
-RUN cd /tmp/bwa \
-	git checkout v0.7.15 && \
-	make
-WORKDIR /tmp/bwa
-RUN cp -p bwa /usr/local/bin && \
-	rm -rf /tmp/bwa
-
-# Install seqtk
-RUN git clone https://github.com/lh3/seqtk.git /tmp/seqtk
-RUN cd /tmp/seqtk \
-	git checkout v1.2 && \
-	make
-WORKDIR /tmp/seqtk
-RUN cp -p seqtk /usr/local/bin && \
-	rm -rf /tmp/seqtk
+RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk python-numpy python-scipy python-biopython bwa seqtk
 
 # Install fqtrim
 RUN mkdir /tmp/fqtrim
