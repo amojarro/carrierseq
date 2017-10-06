@@ -149,7 +149,7 @@ CarrierSeq will generate the following folders and files within your working dir
 
 ## CarrierSeq Example
 Supplementary sequencing data available from ~~NCBI~~</br>
-Figshare: https://doi.org/10.6084/m9.figshare.5471824.v1
+Figshare: https://doi.org/10.6084/m9.figshare.5471824.v1</br>
 ~~Dropbox: https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0~~</br>
 ~~BioProject: https://www.ncbi.nlm.nih.gov/bioproject/398368~~</br>
 ~~BioSample: https://www.ncbi.nlm.nih.gov/biosample/SAMN07509071~~</br>
