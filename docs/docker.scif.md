@@ -204,13 +204,13 @@ The developer has a different use case - to have easy command line access to the
 In this use case, we want to build the development container.
 
 ```
-$ docker build -f Dockerfile.devel -t vanessa/cseq-dev .
+$ docker build -f Dockerfile.devel -t vanessa/cseq:dev .
 ```
 
 We can run the container and get some default help printed
 
 ```
-docker run vanessa/cseq-dev
+docker run vanessa/cseq:dev
 [help] executing /bin/bash /scif/apps/help/scif/runscript
     This is a development image for CarrierSeq, meaning that it exposes the
     underlying tools (bwa, samtools) as applications in the Scientific
@@ -235,7 +235,7 @@ docker run vanessa/cseq-dev
 Now when we look at apps, we see all the core software that can be combined in specific ways to produce a pipeline step like "mapping".
 
 ```
-$ docker run vanessa/cseq-dev apps
+$ docker run vanessa/cseq:dev apps
 bwa
 fqtrim
 python
@@ -247,10 +247,10 @@ each of which might be run, exec to activate the app environment, or shell to sh
 
 ```
 # Open interactive python
-$ docker run -it vanessa/cseq-dev run python
+$ docker run -it vanessa/cseq:dev run python
 
 # Load container with bwa on path
-$ docker run -it vanessa/cseq-dev shell bwa
+$ docker run -it vanessa/cseq:dev shell bwa
 $ which bwa
 $ /scif/apps/bwa/bin/bwa
 ```
