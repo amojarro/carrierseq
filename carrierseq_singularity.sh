@@ -19,10 +19,10 @@ fi
 DATA=$1
 
 # Check that singularity installed
-if [ ! -f "carrierseq.img" ]; then
+if [ ! -f "cseq" ]; then
 
     if type singularity 2>/dev/null; then
-        sudo singularity build carrierseq.img Singularity
+        sudo singularity build cseq Singularity
     else
         echo "Please install singularity 2.4+ and run again"
         exit 0
@@ -37,7 +37,7 @@ if [ ! -f "$DATA/all_reads.fastq" ]; then
 fi
 
 
-singularity run --app download --bind $DATA:/scif/data carrierseq.img
-singularity run --app mapping --bind $DATA:/scif/data carrierseq.img
-singularity run --app poisson --bind $DATA:/scif/data carrierseq.img
-singularity run --app sorting --bind $DATA:/scif/data carrierseq.img
+#singularity run --bind $DATA:/scif/data cseq run download
+singularity run --bind $DATA:/scif/data cseq run mapping
+singularity run --bind $DATA:/scif/data cseq run poisson
+singularity run --bind $DATA:/scif/data cseq run sorting

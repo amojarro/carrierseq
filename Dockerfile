@@ -7,7 +7,11 @@ FROM ubuntu:14.04
 RUN apt-get update
 
 # Install Dependencies
-RUN apt-get install -y git wget build-essential gcc-multilib apt-utils zlib1g-dev samtools pkg-config python-setuptools python-dev python-tables python-pip python-tk python-numpy python-scipy python-biopython bwa seqtk
+RUN apt-get install -y git wget build-essential gcc-multilib \
+                          apt-utils zlib1g-dev samtools pkg-config \
+                          python-setuptools python-dev python-tables \
+                          python-pip python-tk python-numpy python-scipy \ 
+                          python-biopython bwa seqtk
 
 # Install fqtrim
 RUN mkdir /tmp/fqtrim
