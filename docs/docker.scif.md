@@ -204,13 +204,38 @@ The developer has a different use case - to have easy command line access to the
 In this use case, we want to build the development container.
 
 ```
-sudo singularity build carrierseq.dev.img Singularity.devel
+$ docker build -f Dockerfile.devel -t vanessa/cseq-dev .
+```
+
+We can run the container and get some default help printed
+
+```
+docker run vanessa/cseq-dev
+[help] executing /bin/bash /scif/apps/help/scif/runscript
+    This is a development image for CarrierSeq, meaning that it exposes the
+    underlying tools (bwa, samtools) as applications in the Scientific
+    Filesystem.
+    If you want to run the CarrierSeq workflow, use the carrierseq.scif recipe.
+    Github Contributors: Angel Mojarro (@amojarro),
+                         Srinivasa Aditya Bhattaru (@sbhattaru),
+                         Christopher E. Carr (@CarrCE),
+                         Vanessa Sochat (@vsoch).
+    To see applications installed in the Scientific Filesystem:
+    scif apps
+    To run a tool, you might do:
+    scif run bwa
+    scif run samtools
+    Or get help or metadata
+    scif help bwa
+    scif inspect bwa
+    If you install in a container, the entrypoint should be scif, and then
+    issue the above commands to it.
 ```
 
 Now when we look at apps, we see all the core software that can be combined in specific ways to produce a pipeline step like "mapping".
 
 ```
-singularity apps carrierseq.dev.img
+$ docker run vanessa/cseq-dev apps
 bwa
 fqtrim
 python
@@ -222,12 +247,12 @@ each of which might be run, exec to activate the app environment, or shell to sh
 
 ```
 # Open interactive python
-singularity run --app python carrierseq.dev.img
+$ docker run -it vanessa/cseq-dev run python
 
 # Load container with bwa on path
-$ singularity shell --app bwa carrierseq.dev.img
+$ docker run -it vanessa/cseq-dev shell bwa
 $ which bwa
 $ /scif/apps/bwa/bin/bwa
 ```
 
-These two images that serve equivalent software is a powerful example of the flexibility of SCI-F. The container creator can choose the level of detail to expose to a user that doesn't know how it was created, or perhaps has varying levels of expertise. A lab that is using core tools for working with sequence data might have preference for the development container, while a finalized pipeline distributed with a publication would have preference for the first. In both cases, the creator doesn't need to write custom scripts for a container to run a particular app, or to expose environment variables, tests, or labels. By way of using SCI-F, this happens automatically. 
+These two images that serve equivalent software is a powerful example of the flexibility of SCIF. The container creator can choose the level of detail to expose to a user that doesn't know how it was created, or perhaps has varying levels of expertise. A lab that is using core tools for working with sequence data might have preference for the development container, while a finalized pipeline distributed with a publication would have preference for the first. In both cases, the creator doesn't need to write custom scripts for a container to run a particular app, or to expose environment variables, tests, or labels. By way of using SCIF, this happens automatically. 
