@@ -144,7 +144,7 @@ sudo singularity build cseq Singularity.devel
 
 The author is still working on updating the automated download, for now download from [here](https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0) and then move into some data folder you intend to mount:
 
-``
+```
 mv $HOME/Downloads/all_reads.fastq data/
 ```
 
