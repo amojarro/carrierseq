@@ -1,8 +1,8 @@
 # CarrierSeq Singularity
-Singularity is a container, similar to Docker, that is secure to run in HPC environments. For this pipeline, we provide two example containers, each of which provides modular access to the different software inside. By way of using the Standard Container Integration Format (SCI-F) with Singularity, we have a lot of freedom in deciding on what level of functions we want to expose to the user. A developer will want easy access to the core tools (e.g., bwa, seqtk) while a user will likely want one level up, on the level of a collection of steps associated with some task (e.g., mapping). We will walk through the steps of building and using each one.
+Singularity is a container, similar to Docker, that is secure to run in HPC environments. For this pipeline, we provide two example containers, each of which provides modular access to the different software inside. By way of using a Scientific Filesystem (SCIF) with Singularity, we have a lot of freedom in deciding on what level of functions we want to expose to the user. A developer will want easy access to the core tools (e.g., bwa, seqtk) while a user will likely want one level up, on the level of a collection of steps associated with some task (e.g., mapping). We will walk through the steps of building and using each one.
 
 ## Setup
-You first need to install Singularity. For this tutorial, we are using the development branch with the upcoming version 2.4. You can install it doing the following.
+You first need to install Singularity. For this tutorial, we are using the development branch with the current version 2.4.x. You can install it doing the following.
 
 ```
 git clone -b development https://www.github.com/singularityware/singularity.git
@@ -15,7 +15,6 @@ sudo make install
 
 Now you are ready to go!
 
-
 ## Get Data
 If you aren't familar with genomic analysis (as I'm not) you will be utterly confused about
 how to download data. The reference is [provided](../reference), but the input data isn't. The good news is, the tool to download the data is part of the container. So you don't need to do the nonsense that I did to get it. 
@@ -24,45 +23,35 @@ how to download data. The reference is [provided](../reference), but the input d
 Building looks like this:
 
 ```
-sudo singularity build --writable carrierseq.img Singularity
+sudo singularity build cseq Singularity
 ```
 
-If you prefer to have a "sandbox" directory, you can do this:
+This will build a read only (essentially frozen) image, so your pipeline is forever preserved.
+
+
+## Exploring the Container
+If you didn't know anything about the image, you would want to explore it. SCIF 
+provides easy commands to do that. When we just execute the container, the SCIF shows us
+it's default help:
 
 ```
-sudo singularity build --sandbox carrierseq.img Singularity
-```
-
-I don't understand why we have both. I'm ok with this. If you don't need a writable
-image (for testing) just build a final one:
-
-```
-sudo singularity build carrierseq.img Singularity
-```
-
-This will build an essentially frozen image, so your pipeline is forever preserved.
-
-## Listing Pipeline Apps
-If you didn't know anything about the image, you would want to explore it. SCI-F 
-provides easy commands to do that. 
-
-
-### Global Help
-```
-singularity help carrierseq.img
-
-    CarrierSeq is a sequence analysis workflow for low-input nanopore 
+./cseq 
+[help] executing /bin/bash /scif/apps/help/scif/runscript
+    CarrierSeq is a sequence analysis workflow for low-input nanopore
     sequencing which employs a genomic carrier.
-
-    Github Contributors: Angel Mojarro (@amojarro), 
-                         Srinivasa Aditya Bhattaru (@sbhattaru),   
+    Github Contributors: Angel Mojarro (@amojarro),
+                         Srinivasa Aditya Bhattaru (@sbhattaru),
                          Christopher E. Carr (@CarrCE),
                          Vanessa Sochat (@vsoch).
-
     fastq-filter from: https://github.com/nanoporetech/fastq-filter
-    see:
-           singularity run --app readme carrierseq.img | less for more detail
-   
+    To see applications installed in the Scientific Filesystem:
+    scif apps
+    To run a typical pipeline, you might do:
+    scif run mapping
+    scif run poisson
+    scif run sorting
+    If you install in a container, the entrypoint should be scif, and then
+    issue the above commands to it.
 ```
 
 ### SCI-F Apps
@@ -70,84 +59,59 @@ singularity help carrierseq.img
 You can see apps in the image, as instructed:
 
 ```
-singularity apps carrierseq.img
-download
-mapping
-poisson
-readme
-reference
-sorting
+./cseq apps
+  download
+      help
+   mapping
+   poisson
+    readme
+ reference
+   sorting
 ```
 
-The command mentioned at the body is an internal provided only to add, preserve, and
-make the README accessible. Cool!
+or see help for a specific app. For example, readme exists only to capture and then
+print the entire readme of the repository (or any repository container README.md for
+which the SCIF is installed for) to the console:
 
 ```
-singularity run --app readme carrierseq.img | less
+./cseq run readme | tail
+The matrix illustrates the reads/channel distribution of B. subtilis, contamination, and HQNRs across all 512 nanopore channels. Here we are able to visually identify overly productive channels (e.g., 191 reads/channel, etc) producing likely HQNRs.
+![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_roi_q9_p005.png)
 
-# CarrierSeq
+### HQNR Pore Occupancy
+“Bad” channels identified by CarrierSeq as HQNR-associated (reads/channel > 7).
+![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_hqnrs_q9_p005.png)
 
-## About
-
-bioRxiv doi: https://doi.org/10.1101/175281
-
-CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing which employs a genomic carrier.
-
-Github Contributors: Angel Mojarro (@amojarro), Srinivasa Aditya Bhattaru (@sbhattaru), Christopher E. Carr (@CarrCE), and Vanessa Sochat (@vsoch).</br> 
-fastq-filter from: https://github.com/nanoporetech/fastq-filter
-
-.......etc
-```
-
-We can see all apps in the image:
-
-```
-singularity apps carrierseq.img
-mapping
-poisson
-readme
-sorting
-download
+### Target Reads Pore Occupancy
+“Good” channels identified by CarrierSeq as non-HQNR-associated (reads/channel ≤ 7). Channels producing 6 or more reads yield HQNRs that have satisfied our CarrierSeq parameters. By imposing a stricter p-value, CarrierSeq may be able to reject more HQNRs (e.g., xcrit = 5).
+![alt text](https://github.com/amojarro/carrierseq/blob/master/example/carrierseq_target_reads_q9_p005.png)
 ```
 
 And then we can ask for help for any of the pipeline steps:
 
 ```
-singularity help --app mapping carrierseq.img
-singularity help --app poisson carrierseq.img
-singularity help --app sorting carrierseq.img
+./cseq help download
 ```
 
 We can also look at metadata for the entire image, or for an app.  The inspect
 command can expose environment variables, labels, the definition file, tests, and
 runscripts.
 
-See `singularity inspect --help` for more examples:
-
 ```
-singularity inspect carrierseq.img
+# Returns a large data structure with all apps
+./cseq inspect
 
+# Returns for a particular app
+./cseq inspect download
 {
-    "org.label-schema.usage.singularity.deffile.bootstrap": "docker",
-    "org.label-schema.usage.singularity.deffile": "Singularity",
-    "org.label-schema.usage": "/.singularity.d/runscript.help",
-    "org.label-schema.schema-version": "1.0",
-    "org.label-schema.usage.singularity.deffile.from": "ubuntu:14.04",
-    "org.label-schema.build-date": "2017-09-20T18:16:50-07:00",
-    "BIORXIV_DOI": "https://doi.org/10.1101/175281",
-    "org.label-schema.usage.singularity.runscript.help": "/.singularity.d/runscript.help",
-    "org.label-schema.usage.singularity.version": "2.3.9-development.gaaab272",
-    "org.label-schema.build-size": "1419MB"
-}
-
-
-singularity inspect --app mapping carrierseq.img
-{
-    "FQTRIM_VERSION": "v0.9.5",
-    "SEQTK_VERSION": "v1.2",
-    "BWA_VERSION": "v0.7.15",
-    "SINGULARITY_APP_NAME": "mapping",
-    "SINGULARITY_APP_SIZE": "9MB"
+    "download": {
+        "apphelp": [
+            "   The original sra-toolkit does not serve the correct data, so for now you ",
+            "   should download data from ",
+            "   https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0) and then move into some data folder you intend to mount:",
+            "      mv $HOME/Downloads/all_reads.fastq data/"
+        ]
+    }
 }
 ```
 
@@ -166,54 +130,80 @@ mkdir data
 
 # Download data from https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0
 # See issue --> https://github.com/amojarro/carrierseq/issues/1
-singularity run --app mapping --bind data:/scif/data carrierseq.img
-singularity run --app poisson --bind data:/scif/data carrierseq.img
-singularity run --app sorting --bind data:/scif/data carrierseq.img
+cseq="singularity run --bind data:/scif/data cseq"
+
+# $cseq run <app>
 ```
-
-For any of the above steps, see the `singularity help --app <appname> carrierseq.img` for how to
-customize settings and environment variables. This demo is intended to use the defaults.
-
 
 ## CarrierSeq Pipeline
-The common user might want access to the larger scoped pipeline that the software provides. In the case of CarrierSeq, this means (optionally, download) mapping, poisson, and then sorting. If the image isn't provided (e.g., a Singularity Registry or Singularity Hub) the user can build from the build recipe file, `Singularity`:
+The common user might want access to the larger scoped pipeline that the software provides. In the case of CarrierSeq, this means (optionally, download) mapping, poisson, and then sorting. If the image isn't provided (e.g., a Singularity Registry or Singularity Hub) the user can build from the build recipe file, `Singularity.devel`. If you haven't done this already:
 
 ```
-sudo singularity build carrierseq.img Singularity
+sudo singularity build cseq Singularity.devel
 ```
 
 The author is still working on updating the automated download, for now download from [here](https://www.dropbox.com/sh/vyor82ulzh7n9ke/AAC4W8rMe4z5hdb7j4QhF_IYa?dl=0) and then move into some data folder you intend to mount:
 
-``
+```
 mv $HOME/Downloads/all_reads.fastq data/
+```
 
+Let's be lazy and put the bind and singularity command into an environment variable so we don't need
+to type it many times.
+
+```
+cseq="singularity run --bind data:/scif/data cseq"
 ```
 
 And then the various steps of the pipeline are run as was specified above:
 
 ```
-singularity run --app mapping --bind data:/scif/data carrierseq.img
-singularity run --app poisson --bind data:/scif/data carrierseq.img
-singularity run --app sorting --bind data:/scif/data carrierseq.img
+$cseq run mapping
+$cseq run poisson
+$cseq run sorting
 ```
+
+There are even helper functions that the main ones use to get various environments. For example, the `reference` app serves only to return the path to the reference genome!
+
+```
+$ ./cseq exec reference echo [e]reference_genome
+[reference] executing /bin/echo $reference_genome
+$SCIF_APPROOT_reference/lambda_ecoli.fa
+```
+
+or run quietly
+
+```
+$ ./cseq --quiet exec reference echo [e]reference_genome
+$SCIF_APPROOT_reference/lambda_ecoli.fa
+```
+and what is that evaluated to?
+
+```
+./cseq --quiet exec reference echo [e]SCIF_APPROOT_reference/lambda_ecoli.fa
+/scif/apps/reference/lambda_ecoli.fa
+```
+
+Cool!
+
 
 ### 1. Mapping
 To run mapping, bind the data folder to the image, and specify the app to be mapping:
 
 ```
-singularity run --app mapping --bind data:/scif/data carrierseq.img
+singularity run --bind data:/scif/data cseq run mapping
 ```
 
 ## 2. Poisson
 
 ```
-singularity run --app poisson --bind data:/scif/data carrierseq.img
+singularity run --bind data:/scif/data cseq run poisson
 ```
 
 ## 3. Sorting
 
 ```
-singularity run --app sorting --bind data:/scif/data carrierseq.img
+singularity run --bind data:/scif/data cseq run sorting
 ```
 
 
@@ -224,8 +214,8 @@ swap out of the steps:
 
 ```
 ...
-singularity run --app sorting --bind data:/scif/data carrierseq.img
-singularity run --app sorting --bind data:/scif/data another.img
+singularity run --bind data:/scif/data container1 run sorting
+singularity run --bind data:/scif/data container2 run sorting
 ```
 
 or even provide a single container with multiple options for the same step
@@ -233,14 +223,37 @@ or even provide a single container with multiple options for the same step
 
 ```
 ...
-singularity run --app sorting1 --bind data:/scif/data sorting.img
-singularity run --app sorting2 --bind data:/scif/data sorting.img
+singularity run --bind data:/scif/data cseq run sorting1
+singularity run --bind data:/scif/data cseq run sorting2
 ```
 
 As a user, you want a container that exposes enough metadata to run different steps of the pipeline, but you don't want to need to know the specifics of each command call or path within the container. In the above, I can direct the container to my mapped input directory
 and specify a step in the pipeline, and I dont need to understand how to use `bwa` or `grep` or `seqtk`, or any of the other software
 that makes up each.
 
+
+### Interactive Environment
+If you are curious about all the Scientific Filesystem variables available to you:
+
+```
+$cseq exec mapping env | grep SCIF_
+```
+
+and read [the specification](https://sci-f.github.io/specification) for a complete list.
+
+Or if you wanted an interactive shell to explore running commands inside the container:
+
+```
+singularity shell --bind data:/scif/data cseq
+```
+
+or enter a shell in context of a scif application (mapping)
+
+```
+$ singularity run cseq shell mapping
+$ echo $SCIF_APPNAME
+mapping
+```
 
 ## CarrierSeq Development
 The developer has a different use case - to have easy command line access to the lowest level of executables installed in the container. Given a global install of all software, without SCI-F I would need to look at `$PATH` to see what has been added to the path, and then list executables in path locations to find new software installed to, for example, `/usr/bin`. There is no way to easily and programatically "sniff" a container to understand the changes, and the container is a black development box, perhaps only understood by the creator or with careful inspection of the build recipe.

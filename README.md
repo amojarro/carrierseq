@@ -39,9 +39,8 @@ Alternatively, use Docker and the Docker script.
 
 That's it!
 
-## Using Singularity
-
-For instructions on using Singularity, see the [docs/singularity.md](docs/singularity.md).
+## Using Scientific Filesystem (SCIF) 
+This means generating a **Singularity** or **Docker** container that has the same [Scientific Filesystem](https://sci-f.github.io) to create scientific applications to run the pipeline. For instructions on using SCIF with either of these container technologies (or on your host), see the [documentation folder](docs/README.md).
 
 
 ## Using CarrierSeq 
