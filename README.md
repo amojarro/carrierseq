@@ -166,8 +166,8 @@ At Q9, the expected B. subtilis abundance is 590 reads for this sequencing data.
 
 ```
 All Reads (Lambda + B. subtilis + Contamination + Noise)
-Total Reads: 547,478 reads
-Total Bases: 4,914,693,436 bases
+Total Reads: 717,432 reads (edit: The origininal value, 547,478 reads, were over q = 9 not all reads)
+Total Bases: 6.4 gb (edit: same as above, 4,914,693,436 bases)
 ###
 Reads of Interest (B. subtilis + Contamination + HQNRs) [05_reads_of_interest]
 Total Reads: 1,811 reads
