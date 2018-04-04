@@ -2,9 +2,16 @@
 
 ## About
 
-bioRxiv doi: https://doi.org/10.1101/175281
+ - bioRxiv doi: https://doi.org/10.1101/175281
+ - [BMI Bioinformatics](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2124-3)
 
 CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing which employs a genomic carrier.
+
+```
+Angel MojarroEmail author, Julie Hachey, Gary Ruvkun, Maria T. Zuber and Christopher E. Carr
+BMC BioinformaticsBMC series – open, inclusive and trusted201819:108
+https://doi.org/10.1186/s12859-018-2124-3
+```
 
 Github Contributors: Angel Mojarro (@amojarro), Srinivasa Aditya Bhattaru (@sbhattaru), Christopher E. Carr (@CarrCE), and Vanessa Sochat (@vsoch).</br> 
 fastq-filter from: https://github.com/nanoporetech/fastq-filter
