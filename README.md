@@ -3,7 +3,7 @@
 ## About
 
  - bioRxiv doi: https://doi.org/10.1101/175281
- - [BMI Bioinformatics](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2124-3)
+ - [BMC Bioinformatics](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2124-3)
 
 CarrierSeq is a sequence analysis workflow for low-input nanopore sequencing which employs a genomic carrier.
 
