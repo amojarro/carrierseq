@@ -28,6 +28,9 @@ q_score="9"
 p_value="0.0001"
 output_folder=""
 
+# Get self path to use python/*.py
+SELF_PATH=$(cd $(dirname $0); pwd)
+
 # Getops error checking -i, -r, and -o are required
 if ( ! getopts "i:r:o:" opt); then
 	echo "Usage: `basename $0` options [-i INPUT] [-r REFERENCE] [-o OUTPUT] are required. Use -h for help";
@@ -126,7 +129,7 @@ cat $output_folder/02_seqtk/unmapped_reads.txt
 
 # 03 quality_score_filter.py - discard low-quality reads
 echo Applying quality filter...
-python python/quality_score_filter.py $output_folder/02_seqtk/unmapped_reads.fastq $output_folder/03_fastqc/unmapped_reads_qc $q_score
+python $SELF_PATH/python/quality_score_filter.py $output_folder/02_seqtk/unmapped_reads.fastq $output_folder/03_fastqc/unmapped_reads_qc $q_score
 echo Reads saved to 03_fastqc!
 
 # 03.1 grep - count "high-quality" reads
@@ -225,10 +228,10 @@ cat $output_folder/06_poisson_calculation/03_channels_in_use.txt
 
 # 06.02 python - calculate lambda for poisson calculation
 echo Calculating lambda and x_crit values...
-python python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/04_lambda_value.txt
+python $SELF_PATH/python/calculate_lambda.py $TotalROIs $ChannelsInUse > $output_folder/06_poisson_calculation/04_lambda_value.txt
 
 # 06.02.1 python - calculate x_critical
-python python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/05_read_channel_threshold.txt
+python $SELF_PATH/python/xcrit.py $LambdaValue $p_value > $output_folder/06_poisson_calculation/05_read_channel_threshold.txt
 sed -n 6p $output_folder/06_poisson_calculation/05_read_channel_threshold.txt > $output_folder/06_poisson_calculation/06_xcrit_threshold_for_dictionary_search.txt
 cat $output_folder/06_poisson_calculation/05_read_channel_threshold.txt
 
@@ -240,7 +243,7 @@ grep -Eo 'ch=[0-9]+' $output_folder/05_reads_of_interest/carrierseq_roi.fasta | 
 
 # 06.03 pyton - Calculate Frequency and create channel dictionary
 echo Creating channel frequency dictionaries...
-python python/frequency_calc.py $ROIChannels $XCrit $output_folder/06_poisson_calculation/xx_roi_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_hqnr_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_target_channel_dictionary.txt $output_folder/06_poisson_calculation/09_target_channels.lst
+python $SELF_PATH/python/frequency_calc.py $ROIChannels $XCrit $output_folder/06_poisson_calculation/xx_roi_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_hqnr_channel_dictionary.txt $output_folder/06_poisson_calculation/xx_target_channel_dictionary.txt $output_folder/06_poisson_calculation/09_target_channels.lst
 echo Poisson caculation complete! Files saved to 06_poisson_calculation.
 
 ##################
