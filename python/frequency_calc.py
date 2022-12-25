@@ -15,15 +15,15 @@ xcrit = float(xcrit_value)
 new_channel_list = []
 i = 0
 for element in channel_list:
- 	new_channel_list.append(channel_list[i].rstrip('\n'))
- 	i = i + 1
+    new_channel_list.append(channel_list[i].rstrip('\n'))
+    i = i + 1
  
 # Next we convert each element to an integer in a loop
 ind = 0
 channel_list_num = []
 for element in new_channel_list:
- 	channel_list_num.append(int(new_channel_list[ind]))
- 	ind = ind + 1
+     channel_list_num.append(int(new_channel_list[ind]))
+     ind = ind + 1
  
 # Next we create a dictionary where each element is in the format of "channel: frequency"
 channel_freq = {x:channel_list_num.count(x) for x in channel_list_num}
@@ -33,28 +33,28 @@ target_channels = dict()
 hqnr_channels = dict()
 
 for channel in channel_freq:
-	if channel_freq[channel] <= xcrit:
-		target_channels[channel] = channel_freq[channel]
-	else:
-		hqnr_channels[channel] = channel_freq[channel]
+    if channel_freq[channel] <= xcrit:
+        target_channels[channel] = channel_freq[channel]
+    else:
+        hqnr_channels[channel] = channel_freq[channel]
 
 # Save roi channel frequency dictionary
 with open(sys.argv[3], 'w') as f:
     sys.stdout = f
-    print channel_freq
+    print(channel_freq)
     
 # save hqnr channel dictionary
 with open(sys.argv[4], 'w') as f:
     sys.stdout = f
-    print hqnr_channels
+    print(hqnr_channels)
     
 # save target reads channel dictionary
 with open(sys.argv[5], 'w') as f:
     sys.stdout = f
-    print target_channels
+    print(target_channels)
  
 # print only target channels used for sorting    
 with open(sys.argv[6], 'w') as f:
     sys.stdout = f
     for item in target_channels.keys():
-    	print item
+        print(item)
