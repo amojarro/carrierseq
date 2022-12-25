@@ -5,7 +5,7 @@
 
 from Bio import SeqIO
 import math
-from Tkinter import Tk
+# from Tkinter import Tk
 import sys
 
 name = sys.argv[1]
@@ -31,7 +31,7 @@ for rec in SeqIO.parse(name, "fastq"):
     av_q = float(-10.0*(math.log10(float(av_prob))))
  #   print av_prob, av_q
     if av_q >= qs:
-	cnt += 1
+        cnt += 1
         qual_sequences.append(rec)
 
 output_handle = open(output +'.fa', "w")
